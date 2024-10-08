@@ -1,8 +1,11 @@
 import express from "express"
-import { createUser } from "../controllers/user.controller"
+import { createUser, updateCurrentUser } from "../controllers/user.controller"
+import { jwtCheck, jwtParse } from "../middleweres/auth"
 
-const router=express.Router()
+const router = express.Router()
 
-router.post('/create',createUser)
+// router.use(jwtCheck)
+router.post('/create', createUser)
+router.put('/', updateCurrentUser)
 
 export default router
