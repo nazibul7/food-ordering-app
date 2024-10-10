@@ -20,25 +20,38 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 
 export const updateCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const result=ValidatUserRequest.safeParse(req.body)
-        if(!result.success){
-            const data=result.error.flatten().fieldErrors
+        const result = ValidatUserRequest.safeParse(req.body)
+        if (!result.success) {
+            const data = result.error.flatten().fieldErrors
             return res.status(403).json(data)
         }
-        const { name, addressLine1, city, country }:ValidatUserRequestType = ValidatUserRequest.parse(req.body)
-        const user=await User.findById(req.userId)
-        if(!user){
-            return res.status(404).json({message:"User not found"})
+        const { name, addressLine1, city, country }: ValidatUserRequestType = ValidatUserRequest.parse(req.body)
+        const user = await User.findById(req.userId)
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
         }
-        user.name=name
-        user.addressLine1=addressLine1
-        user.city=city
-        user.country=country
+        user.name = name
+        user.addressLine1 = addressLine1
+        user.city = city
+        user.country = country
 
         await user.save()
         res.status(200).json(user)
     } catch (error) {
         console.log(error);
+        next(error)
+    }
+}
+
+export const getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { auth0Id } = req
+        const user = await User.findOne({ auth0Id })
+        if (!user) {
+            throw new Error("User not found")
+        }
+        res.status(200).json(user)
+    } catch (error) {
         next(error)
     }
 }
