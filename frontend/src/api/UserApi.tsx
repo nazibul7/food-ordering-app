@@ -7,25 +7,25 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useGetUser = () => {
     const { getAccessTokenSilently } = useAuth0()
-    const getUserRequest = async ():Promise<User> => {
+    const getUserRequest = async (): Promise<User> => {
         const accessToken = await getAccessTokenSilently()
         const response = await fetch(`${API_BASE_URL}/api/v1/user`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${accessToken}`,
-                'Content-Type':"application/json"
+                'Content-Type': "application/json"
             }
         })
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error('Failed to fetch user')
         }
         return response.json()
     }
-    const {data:currentUser,isLoading,error}=useQuery("fetchCurrentUser",getUserRequest)
-    if(error){
+    const { data: currentUser, isLoading, error } = useQuery("fetchCurrentUser", getUserRequest)
+    if (error) {
         toast.error(error.toString())
     }
-    return {currentUser,isLoading}
+    return { currentUser, isLoading }
 }
 
 type UserRequest = {
@@ -84,10 +84,20 @@ export const useUpdateUser = () => {
     }
     const { mutateAsync: updateUser, isLoading, isSuccess, error, reset } = useMutation(updateUserRequest)
     if (isSuccess) {
-        toast.success("User profile updated!")
+        toast.success("User profile updated!", {
+            style: {
+                backgroundColor: '#22c55e',
+                color: "whitesmoke"
+            }
+        })
     }
     if (error) {
-        toast.error(error.toString())
+        toast.error(error.toString(), {
+            style: {
+                backgroundColor: "#ef4444", // Tailwind red-500
+                color: "#ffffff",
+            },
+        })
         reset()
     }
     return { updateUser, isLoading }
