@@ -23,7 +23,7 @@ export const updateCurrentUser = async (req: Request, res: Response, next: NextF
         const result = ValidatUserRequest.safeParse(req.body)
         if (!result.success) {
             const data = result.error.flatten().fieldErrors
-            return res.status(403).json(data)
+            return res.status(400).json(data)
         }
         const { name, addressLine1, city, country }: ValidatUserRequestType = ValidatUserRequest.parse(req.body)
         const user = await User.findById(req.userId)
@@ -55,3 +55,5 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
         next(error)
     }
 }
+
+

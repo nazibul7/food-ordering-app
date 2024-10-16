@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const munuItemSchema = new mongoose.Schema({
+const menuItemSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true }
 })
@@ -34,7 +34,7 @@ const resturantSchema = new mongoose.Schema({
         type: String,
         required: true
     }],
-    munuItems: [munuItemSchema],
+    menuItems: [menuItemSchema],
     imageUrl: {
         type: String,
         required: true

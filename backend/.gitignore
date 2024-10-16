@@ -1,6 +1,8 @@
 # ENV
 .env
 env
+public/*
+./public
 # Logs
 logs
 *.log

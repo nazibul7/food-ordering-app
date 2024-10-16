@@ -8,3 +8,19 @@ export const ValidatUserRequest = z.object({
 })
 
 export type ValidatUserRequestType = z.infer<typeof ValidatUserRequest>
+
+export const resturantSchema = z.object({
+    resturantName: z.string(),
+    city: z.string(),
+    country: z.string(),
+    deliveryPrice: z.number().positive(),
+    estimatedDeliveryTime: z.number().positive(),
+    cuisines: z.array(z.string()),
+    menuItems: z.array(z.object({
+        name: z.string(),
+        price: z.number().positive()
+    })),
+    lastUpdated: z.string()
+})
+
+export type resturantSchemaType = z.infer<typeof resturantSchema>
