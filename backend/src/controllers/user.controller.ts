@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../models/user.model";
 import { errorHandler } from "../middleweres/errorHandler";
-import { ValidatUserRequest, ValidatUserRequestType } from "../middleweres/zod.validation";
+import { ValidatUserRequest, ValidatUserRequestType } from "../utils/zod.validation";
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
