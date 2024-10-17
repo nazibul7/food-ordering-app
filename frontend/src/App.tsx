@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage'
 import AuthCallbackPage from './pages/AuthCallbackPage'
 import UserProfilePage from './pages/UserProfilePage'
 import ProtectedRoute from './auth/ProtectedRoute'
+import ManageResturantPage from './pages/ManageResturantPage'
 
 function App() {
   return (
@@ -12,7 +13,9 @@ function App() {
       <Route path='/auth-callback' element={<AuthCallbackPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path='/user-profile' element={<Layout showHero={false}><UserProfilePage /></Layout>} />
+        <Route path='/manage-resturant'element={<Layout showHero={false}><ManageResturantPage/></Layout>} />
       </Route>
+
       <Route path='*' element={<Navigate to={'/'} />} />
     </Routes>
   )

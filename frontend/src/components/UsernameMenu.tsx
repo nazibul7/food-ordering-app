@@ -16,6 +16,10 @@ const UsernameMenu = () => {
                 <DropdownMenuItem>
                     <Link className='font-bold hover:text-orange-500' to={'/user-profile'}>User Profile</Link>
                 </DropdownMenuItem>
+                {/* <DropdownMenuSeparator /> */}
+                <DropdownMenuItem>
+                    <Link className='font-bold hover:text-orange-500' to={'/manage-resturant'}>Manage Resturtant</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                     <Button onClick={() => logout()} className='font-bold bg-orange-500 flex flex-1'>Logout</Button>
