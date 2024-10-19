@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Resturant } from "../models/resturant.model";
 import { resturantSchema, resturantSchemaType } from "../utils/zod.validation";
-import { date } from "zod";
+
 import { uploadOnCloudinary } from "../utils/cloudinary";
 
 export const createResturant = async (req: Request, res: Response, next: NextFunction) => {
