@@ -45,7 +45,13 @@ const ManageResturantForm = ({ onSave, isLoading }: Props) => {
         }
     })
 
+   console.log(form.formState.isValid);
+   console.log(form.formState.errors);
+   
     const onSubmit = (formDataJson: resturantFormType) => {
+      try {
+        console.log('called');
+        
         const formData = new FormData()
         formData.append('resturantName', formDataJson.resturantName)
         formData.append('city', formDataJson.city)
@@ -61,7 +67,13 @@ const ManageResturantForm = ({ onSave, isLoading }: Props) => {
             formData.append(`cusines[${index}]`, item)
         })
         formData.append('imageFile', formDataJson.imageFile)
+        console.log(formData);
+        
         onSave(formData)
+      } catch (error) {
+        
+          console.error('Error during submission:', error);
+      }
     }
     return (
         <Form {...form}>

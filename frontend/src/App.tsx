@@ -13,7 +13,7 @@ function App() {
       <Route path='/auth-callback' element={<AuthCallbackPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path='/user-profile' element={<Layout showHero={false}><UserProfilePage /></Layout>} />
-        <Route path='/manage-resturant'element={<Layout showHero={false}><ManageResturantPage/></Layout>} />
+        <Route path='/manage-resturant' element={<Layout showHero={false}><ManageResturantPage/></Layout>} />
       </Route>
 
       <Route path='*' element={<Navigate to={'/'} />} />

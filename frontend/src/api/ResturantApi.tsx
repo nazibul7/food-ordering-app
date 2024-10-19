@@ -9,7 +9,9 @@ export const useCreateResturant = () => {
     const { getAccessTokenSilently } = useAuth0()
     const creatResturantRequest = async (resturantFormData: FormData):Promise<Resturant> => {
         const accessToken = await getAccessTokenSilently()
-        const response = await fetch(`${API_BASE_URL}//api/resturant`, {
+        console.log(API_BASE_URL);
+        console.log(accessToken);
+        const response = await fetch(`${API_BASE_URL}/api/resturant`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${accessToken}`
