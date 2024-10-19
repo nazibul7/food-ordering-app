@@ -1,0 +1,87 @@
+The `ControllerRenderProps<FormValues, "cusines">` type in your `Props` definition serves a specific purpose in managing form state and providing type safety when working with controlled components in `react-hook-form`. Let’s break down why it takes `FormValues` and `"cusines"` as arguments.
+
+### 1. **Purpose of `ControllerRenderProps`**
+
+`ControllerRenderProps` is a TypeScript type provided by `react-hook-form` that describes the props that a controlled component receives. It helps you manage the state and behavior of form fields in a type-safe manner. 
+
+### 2. **Generic Type Parameters**
+
+The type takes two generic parameters:
+
+- **`FormValues`**: This parameter describes the shape of the entire form's data. It is a type you define elsewhere in your code that outlines all the fields in your form. For example, it might look something like this:
+
+    ```typescript
+    type FormValues = {
+        cusines: string[];            // An array of strings representing selected cuisines
+        resturantName: string;        // Name of the restaurant
+        city: string;                 // City name
+        country: string;              // Country name
+        deliveryPrice: number;        // Delivery price
+        estimatedDeliveryTime: number; // Estimated delivery time in minutes
+    };
+    ```
+
+- **`"cusines"`**: This is a string literal type representing the specific key in `FormValues` that this controlled component will manage. In this case, it indicates that the `field` prop will handle the `cusines` property from the `FormValues` type.
+
+### 3. **How It Works Together**
+
+- **Type Safety**: By specifying `FormValues`, TypeScript knows the overall structure of your form data. This means that when you use `field`, TypeScript can ensure that you're accessing the correct properties and methods related to that specific field. 
+
+- **Specific Field Management**: The `"cusines"` string tells TypeScript which specific part of the form's state this `field` corresponds to. In this case, it indicates that `field` will manage the `cusines` array, allowing you to get the current value, update it, and handle validation for this specific field.
+
+### 4. **Example Explanation**
+
+Here’s a practical example to illustrate how this works in your component:
+
+```typescript
+import { Checkbox } from "@/components/ui/checkbox";
+import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
+import { ControllerRenderProps } from "react-hook-form";
+
+type FormValues = {
+    cusines: string[]; // List of selected cuisines
+};
+
+type Props = {
+    cusine: string; // Individual cuisine name
+    field: ControllerRenderProps<FormValues, "cusines">; // Field for managing the 'cusines' state
+};
+
+const CuisineCheckbox: React.FC<Props> = ({ cusine, field }) => {
+    return (
+        <FormItem>
+            <FormControl>
+                <Checkbox
+                    checked={field.value.includes(cusine)} // Accessing current value of 'cusines'
+                    onCheckedChange={(checked) => {
+                        const updatedValues = checked
+                            ? [...field.value, cusine] // Add cuisine if checked
+                            : field.value.filter((item) => item !== cusine); // Remove if unchecked
+                        field.onChange(updatedValues); // Update the form state
+                    }}
+                />
+            </FormControl>
+            <FormLabel>{cusine}</FormLabel>
+        </FormItem>
+    );
+};
+```
+
+### Breakdown of Example
+
+1. **Field Management**: The `field` prop provides the necessary methods and properties to manage the `cusines` state. This includes:
+   - **`field.value`**: Gives access to the current array of selected cuisines.
+   - **`field.onChange`**: A method to update the form state when the checkbox is checked or unchecked.
+
+2. **Checkbox Logic**:
+   - When the checkbox is checked, the cuisine is added to the array.
+   - When unchecked, the cuisine is removed from the array.
+   - The `field.onChange(updatedValues)` call updates the form's state to reflect the changes.
+
+### Summary
+
+- **Why `FormValues`**: It defines the overall structure of the form's data, enabling type checking and autocompletion.
+  
+- **Why `"cusines"`**: It specifies which part of the `FormValues` type the `field` prop will manage, allowing it to focus specifically on the `cusines` array.
+
+This approach ensures that your component is strongly typed, meaning that TypeScript can catch errors related to the form structure at compile time, enhancing code safety and maintainability.

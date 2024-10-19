@@ -1,0 +1,78 @@
+Using `useFormContext` instead of `useForm` in your `DetailsSection` component is a good practice when working with nested form components in `react-hook-form`. Here’s why:
+
+### Benefits of Using `useFormContext`
+
+1. **Access to the Parent Form Context**: 
+   - When you use `useForm`, it creates a new form instance. This means that if you have a form nested inside other components (like `DetailsSection`), it won’t have access to the parent form's state, methods, and validation.
+   - `useFormContext`, on the other hand, allows you to access the form instance provided by the parent component that uses `FormProvider`. This ensures that all nested components share the same form state.
+
+2. **Cleaner Code**:
+   - Using `useFormContext` makes your code cleaner and more maintainable, as you don't need to pass the `control` prop explicitly through each component. You can simply call `useFormContext()` in any child component that needs to interact with the form.
+
+3. **Separation of Concerns**:
+   - It allows you to separate the form structure from the form logic. The main form component can manage all form state, while the nested components can focus on rendering fields and handling UI concerns.
+
+### How to Use `useFormContext`
+
+Here’s a brief example of how you can implement `useFormContext` in your `DetailsSection`:
+
+#### In the Parent Component
+
+Make sure to wrap your form with `FormProvider`:
+
+```tsx
+import { FormProvider, useForm } from "react-hook-form";
+
+const ManageResturantForm = ({ onSave, isLoading }: Props) => {
+    const form = useForm<resturantFormType>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            resturantName: '',
+            city: '',
+            country: '',
+            deliveryPrice: 0,
+            estimatedDeliveryTime: 0,
+            cusines: [],
+            menuItems: [],
+            imageFile: null,
+        },
+    });
+
+    return (
+        <FormProvider {...form}> {/* Wrap the form with FormProvider */}
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 bg-gray-50 p-10 rounded-lg">
+                <DetailsSection /> {/* No need to pass control prop explicitly */}
+                <Separator />
+                <CuisinesSection />
+                <Separator />
+                <MenuSection />
+                <Separator />
+                <ImageSection />
+                {isLoading ? <LoadingButton /> : <Button type="submit">Submit</Button>}
+            </form>
+        </FormProvider>
+    );
+};
+```
+
+#### In the `DetailsSection`
+
+Then, simply call `useFormContext`:
+
+```tsx
+import { useFormContext } from "react-hook-form";
+
+const DetailsSection = () => {
+    const { control } = useFormContext(); // Access the form context
+
+    return (
+        <div className="space-y-2">
+            {/* Your form fields here */}
+        </div>
+    );
+};
+```
+
+### Conclusion
+
+Switching to `useFormContext` allows your nested components to access the parent form state and methods seamlessly, resulting in better organization and reusability of your form components. It’s particularly useful when building larger forms where passing props down through multiple layers can become cumbersome.
