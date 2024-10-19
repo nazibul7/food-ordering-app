@@ -9,9 +9,10 @@ import MenuSection from "./MenuSection"
 import ImageSection from "./ImageSection"
 import LoadingButton from "@/components/LoadingButton"
 import { Button } from "@/components/ui/button"
+import { DateTime } from "luxon"
 
 const formSchema = z.object({
-    resturantName: z.string().trim().min(1,"Resturant name is required"),
+    resturantName: z.string().trim().min(1, "Resturant name is required"),
     city: z.string({ required_error: "City name is required" }),
     country: z.string({ required_error: "Country name is required" }),
     deliveryPrice: z.coerce.number({
@@ -39,41 +40,33 @@ type Props = {
 const ManageResturantForm = ({ onSave, isLoading }: Props) => {
     const form = useForm<resturantFormType>({
         resolver: zodResolver(formSchema),
-        defaultValues:{
-            resturantName:'',
-            cusines:[]
+        defaultValues: {
+            resturantName: '',
+            cusines: []
         }
     })
-
-   console.log(form.formState.isValid);
-   console.log(form.formState.errors);
-   
     const onSubmit = (formDataJson: resturantFormType) => {
-      try {
-        console.log('called');
-        
-        const formData = new FormData()
-        formData.append('resturantName', formDataJson.resturantName)
-        formData.append('city', formDataJson.city)
-        formData.append('country', formDataJson.country)
-        formData.append('deliveryPrice', formDataJson.deliveryPrice.toString())
-        formData.append('estimatedDeliveryTime', formDataJson.estimatedDeliveryTime.toString())
+        try {
+            const formData = new FormData()
+            formData.append('resturantName', formDataJson.resturantName)
+            formData.append('city', formDataJson.city)
+            formData.append('country', formDataJson.country)
+            formData.append('deliveryPrice', formDataJson.deliveryPrice.toString())
+            formData.append('estimatedDeliveryTime', formDataJson.estimatedDeliveryTime.toString())
 
-        formDataJson.menuItems.forEach((menu, index) => {
-            formData.append(`menuItems[${index}][name]`, menu.name)
-            formData.append(`menuItems[${index}][price]`, menu.price.toString())
-        })
-        formDataJson.cusines.forEach((item, index) => {
-            formData.append(`cusines[${index}]`, item)
-        })
-        formData.append('imageFile', formDataJson.imageFile)
-        console.log(formData);
-        
-        onSave(formData)
-      } catch (error) {
-        
-          console.error('Error during submission:', error);
-      }
+            formDataJson.menuItems.forEach((menu, index) => {
+                formData.append(`menuItems[${index}][name]`, menu.name)
+                formData.append(`menuItems[${index}][price]`, menu.price.toString())
+            })
+            formDataJson.cusines.forEach((item, index) => {
+                formData.append(`cusines[${index}]`, item)
+            })
+            formData.append('imageFile', formDataJson.imageFile)
+            formData.append('lastUpdated', DateTime.now().toISO())
+            onSave(formData)
+        } catch (error) {
+            console.error('Error during submission:', error);
+        }
     }
     return (
         <Form {...form}>
