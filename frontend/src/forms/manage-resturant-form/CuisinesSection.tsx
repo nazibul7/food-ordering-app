@@ -1,18 +1,13 @@
 import { FormDescription, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { cuisineList } from "@/config/resturnat-options-config"
-import { useForm } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import CusineCheckbox from "./CusineCheckbox"
 
 type FormValues = {
     cusines: string[];
 };
-
 export default function CuisinesSection() {
-    const { control } = useForm<FormValues>({
-        defaultValues: {
-            cusines: []
-        }
-    })
+    const { control } = useFormContext<FormValues>()
     return (
         <div className="space-y-2">
             <div>

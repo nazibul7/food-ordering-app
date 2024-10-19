@@ -11,14 +11,18 @@ import LoadingButton from "@/components/LoadingButton"
 import { Button } from "@/components/ui/button"
 
 const formSchema = z.object({
-    resturantName: z.string({ required_error: "Resturant name is required" }),
+    resturantName: z.string().trim().min(1,"Resturant name is required"),
     city: z.string({ required_error: "City name is required" }),
     country: z.string({ required_error: "Country name is required" }),
-    deliveryPrice: z.coerce.number({ required_error: "Delivery price is required", invalid_type_error: "Must be a valid number" }),
-    estimatedDeliveryTime: z.coerce.number({ required_error: "Estimated delivery time is required", invalid_type_error: "Must be a valid number" }),
-    cusines: z.array(z.string().nonempty({
-        message: "Please select at least one item"
-    })),
+    deliveryPrice: z.coerce.number({
+        required_error: "Delivery price is required",
+        invalid_type_error: "Must be a valid number",
+    }),
+    estimatedDeliveryTime: z.coerce.number({
+        required_error: "Estimated delivery time is required",
+        invalid_type_error: "Must be a valid number",
+    }),
+    cusines: z.array(z.string()).min(1, "Please select at least one item"),
     menuItems: z.array(z.object({
         name: z.string().min(1, "Name is required"),
         price: z.coerce.number().min(1, "Price is required")
@@ -28,17 +32,40 @@ const formSchema = z.object({
 
 type resturantFormType = z.infer<typeof formSchema>
 type Props = {
-    onSave: (resturantFormData: resturantFormType) => void
+    onSave: (resturantFormData: FormData) => void
     isLoading: boolean
 }
 
 const ManageResturantForm = ({ onSave, isLoading }: Props) => {
     const form = useForm<resturantFormType>({
-        resolver: zodResolver(formSchema)
+        resolver: zodResolver(formSchema),
+        defaultValues:{
+            resturantName:'',
+            cusines:[]
+        }
     })
+
+    const onSubmit = (formDataJson: resturantFormType) => {
+        const formData = new FormData()
+        formData.append('resturantName', formDataJson.resturantName)
+        formData.append('city', formDataJson.city)
+        formData.append('country', formDataJson.country)
+        formData.append('deliveryPrice', formDataJson.deliveryPrice.toString())
+        formData.append('estimatedDeliveryTime', formDataJson.estimatedDeliveryTime.toString())
+
+        formDataJson.menuItems.forEach((menu, index) => {
+            formData.append(`menuItems[${index}][name]`, menu.name)
+            formData.append(`menuItems[${index}][price]`, menu.price.toString())
+        })
+        formDataJson.cusines.forEach((item, index) => {
+            formData.append(`cusines[${index}]`, item)
+        })
+        formData.append('imageFile', formDataJson.imageFile)
+        onSave(formData)
+    }
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSave)} className="space-y-8 bg-gray-50 p-10 rounded-lg">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 bg-gray-50 p-10 rounded-lg">
                 <DetailsSection />
                 <Separator />
                 <CuisinesSection />
@@ -46,7 +73,7 @@ const ManageResturantForm = ({ onSave, isLoading }: Props) => {
                 <MenuSection />
                 <Separator />
                 <ImageSection />
-                {isLoading ? <LoadingButton/>:<Button type="submit">Submit</Button>}
+                {isLoading ? <LoadingButton /> : <Button type="submit">Submit</Button>}
             </form>
         </Form>
     )

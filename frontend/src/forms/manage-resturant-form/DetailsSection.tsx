@@ -1,11 +1,10 @@
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 
 const DetailsSection = () => {
-    const { control } = useForm({ defaultValues:{
-        resturantName:'',city:"",country:'',deliveryprice:0,estimatedDeliveryTime:0
-    }})
+    const { control } = useFormContext()
+
     return (
         <div className="space-y-2">
             <div>
@@ -20,7 +19,7 @@ const DetailsSection = () => {
                     <FormControl>
                         <Input {...field} className="bg-white" />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                 </FormItem>
             )}>
             </FormField>
@@ -31,7 +30,7 @@ const DetailsSection = () => {
                         <FormControl>
                             <Input {...field} className="bg-white" />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>
                 )}>
                 </FormField>
@@ -41,7 +40,7 @@ const DetailsSection = () => {
                         <FormControl>
                             <Input {...field} className="bg-white" />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>
                 )}>
                 </FormField>
@@ -52,7 +51,7 @@ const DetailsSection = () => {
                     <FormControl>
                         <Input {...field} className="bg-white" placeholder="1.4" />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                 </FormItem>
             )}>
             </FormField>
@@ -62,7 +61,7 @@ const DetailsSection = () => {
                     <FormControl>
                         <Input {...field} className="bg-white" placeholder="30" />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                 </FormItem>
             )}>
             </FormField>

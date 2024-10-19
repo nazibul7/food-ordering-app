@@ -1,9 +1,9 @@
+import { useCreateResturant } from "@/api/ResturantApi";
 import ManageResturantForm from "@/forms/manage-resturant-form/ManageResturantForm";
-import { useForm } from "react-hook-form";
 
 export default function ManageResturantPage() {
-    const {}=useForm()
+  const { creatResturant, isLoading } = useCreateResturant()
   return (
-    <ManageResturantForm/>
+    <ManageResturantForm onSave={creatResturant} isLoading={isLoading} />
   )
 }

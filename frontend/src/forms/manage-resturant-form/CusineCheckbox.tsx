@@ -10,10 +10,11 @@ type Props = {
     field: ControllerRenderProps<FormValues, "cusines">
 }
 export default function CusineCheckbox({ cusine, field }: Props) {
+   
     return (
         <FormItem className="flex flex-row items-center space-x-1 space-y-0 mt-2">
             <FormControl>
-                <Checkbox className="bg-white" checked={field.value.includes(cusine)}
+                <Checkbox className="bg-white" checked={field.value?.includes(cusine)}
                     onCheckedChange={(checked) => { 
                         const updatedValues = checked ? [...field.value, cusine] : field.value.filter((item: string) => item != cusine)
                         field.onChange(updatedValues)
