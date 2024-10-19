@@ -10,15 +10,23 @@ export const createResturant = async (req: Request, res: Response, next: NextFun
         if (existingResturant) {
             return res.status(409).json("User resturant already exists")
         }
-        const result = resturantSchema.safeParse(req.body)
+        const parsedBody = {
+            ...req.body,
+            deliveryPrice: parseFloat(req.body.deliveryPrice),
+            estimatedDeliveryTime: parseFloat(req.body.estimatedDeliveryTime),
+            menuItems: req.body.menuItems.map((item: { name: string, price: string }) => ({
+                ...item,
+                price: parseFloat(item.price) // Convert price to number
+            }))
+        };
+        const result = resturantSchema.safeParse(parsedBody)
         if (!result.success) {
             const data = result.error.flatten().fieldErrors
             return res.status(400).json(data)
         }
-        const inputData: resturantSchemaType = resturantSchema.parse(req.body)
+        const inputData: resturantSchemaType = resturantSchema.parse(parsedBody)
         const filePath = req.file?.path
-        console.log(filePath);
-        
+
         const cloudinaryData = await uploadOnCloudinary(filePath as string)
         if (!cloudinaryData) {
             return res.status(400).json("Unable to upload file")
@@ -30,9 +38,11 @@ export const createResturant = async (req: Request, res: Response, next: NextFun
             country: inputData.country,
             deliveryPrice: inputData.deliveryPrice,
             estimatedDeliveryTime: inputData.estimatedDeliveryTime,
-            cuisines: inputData.cuisines,
+            cuisines: inputData.cusines,
             menuItems: inputData.menuItems,
-            imageUrl: imageUrl
+            imageUrl: imageUrl,
+            lastUpdated:inputData.lastUpdated,
+            user:req.userId
         })
 
         return res.status(200).json(data)

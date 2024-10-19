@@ -15,7 +15,7 @@ export const resturantSchema = z.object({
     country: z.string(),
     deliveryPrice: z.number().positive(),
     estimatedDeliveryTime: z.number().positive(),
-    cuisines: z.array(z.string()),
+    cusines: z.array(z.string()),
     menuItems: z.array(z.object({
         name: z.string(),
         price: z.number().positive()
