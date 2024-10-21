@@ -41,11 +41,24 @@ export const createResturant = async (req: Request, res: Response, next: NextFun
             cuisines: inputData.cusines,
             menuItems: inputData.menuItems,
             imageUrl: imageUrl,
-            lastUpdated:inputData.lastUpdated,
-            user:req.userId
+            lastUpdated: inputData.lastUpdated,
+            user: req.userId
         })
 
         return res.status(200).json(data)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getResturant = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.userId
+        const resturant = await Resturant.findById({ userId })
+        if (!resturant) {
+            return res.status(404).json("No resturant found")
+        }
+        res.status(200).json(resturant)
     } catch (error) {
         next(error)
     }
