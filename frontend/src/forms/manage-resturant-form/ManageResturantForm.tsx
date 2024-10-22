@@ -10,6 +10,7 @@ import ImageSection from "./ImageSection"
 import LoadingButton from "@/components/LoadingButton"
 import { Button } from "@/components/ui/button"
 import { DateTime } from "luxon"
+import { useEffect } from "react"
 
 const formSchema = z.object({
     resturantName: z.string().trim().min(1, "Resturant name is required"),
@@ -33,17 +34,24 @@ const formSchema = z.object({
 
 type resturantFormType = z.infer<typeof formSchema>
 type Props = {
+    resturant?: resturantFormType
     onSave: (resturantFormData: FormData) => void
     isLoading: boolean
 }
 
-const ManageResturantForm = ({ onSave, isLoading }: Props) => {
+const ManageResturantForm = ({ resturant, onSave, isLoading }: Props) => {
     const form = useForm<resturantFormType>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            resturantName: '',
-            cusines: []
-        }
+            resturantName: "", // Default restaurant name
+            city: "",          // Default city
+            country: "",       // Default country
+            deliveryPrice: 0,  // Default delivery price
+            estimatedDeliveryTime: 0, // Default estimated delivery time
+            cusines: [],       // Default empty array for cuisines
+            menuItems: [{ name: "", price: 0 }], // Default single menu item
+            imageFile: undefined // Default for file input
+        },
     })
     const onSubmit = (formDataJson: resturantFormType) => {
         try {
@@ -68,6 +76,11 @@ const ManageResturantForm = ({ onSave, isLoading }: Props) => {
             console.error('Error during submission:', error);
         }
     }
+    useEffect(() => {
+        if (resturant) {
+            form.reset(resturant)
+        }
+    }, [form, resturant])
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 bg-gray-50 p-10 rounded-lg">

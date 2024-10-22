@@ -1,9 +1,10 @@
-import { useCreateResturant } from "@/api/ResturantApi";
+import { useCreateResturant, useGetResturant } from "@/api/ResturantApi";
 import ManageResturantForm from "@/forms/manage-resturant-form/ManageResturantForm";
 
 export default function ManageResturantPage() {
-  const { creatResturant, isLoading } = useCreateResturant()
+  const { creatResturant, isLoading:isCreateLoading } = useCreateResturant()
+  const { resturant, isLoading:isGetLoading } = useGetResturant()
   return (
-    <ManageResturantForm onSave={creatResturant} isLoading={isLoading} />
+    <ManageResturantForm resturant={resturant} onSave={creatResturant} isLoading={isCreateLoading} />
   )
 }
