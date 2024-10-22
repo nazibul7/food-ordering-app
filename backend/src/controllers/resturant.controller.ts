@@ -32,13 +32,14 @@ export const createResturant = async (req: Request, res: Response, next: NextFun
             return res.status(400).json("Unable to upload file")
         }
         const imageUrl = cloudinaryData.secure_url
+        
         const data = await Resturant.create({
             resturantName: inputData.resturantName,
             city: inputData.city,
             country: inputData.country,
             deliveryPrice: inputData.deliveryPrice,
             estimatedDeliveryTime: inputData.estimatedDeliveryTime,
-            cuisines: inputData.cusines,
+            cusines: inputData.cusines,
             menuItems: inputData.menuItems,
             imageUrl: imageUrl,
             lastUpdated: inputData.lastUpdated,
@@ -54,9 +55,9 @@ export const createResturant = async (req: Request, res: Response, next: NextFun
 export const getResturant = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.userId
-        const resturant = await Resturant.findById({ userId })
+        const resturant = await Resturant.findOne({ user: userId })
         if (!resturant) {
-            return res.status(404).json("No resturant found")
+            return res.status(404).json("No resturant found, Fill the form to create a resturant")
         }
         res.status(200).json(resturant)
     } catch (error) {
