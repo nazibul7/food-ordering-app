@@ -24,3 +24,13 @@ export const resturantSchema = z.object({
 })
 
 export type resturantSchemaType = z.infer<typeof resturantSchema>
+
+export const UpdatResturantSchema = resturantSchema.partial().refine((data) => {
+    const hasAtLeastOneField = Object.values(data).some((value) => value != undefined && value != null)
+    return hasAtLeastOneField
+}, {
+    message: "At least one field must be provided to update the restaurant.",
+    path: []
+})
+
+export type UpdatResturantType=z.infer<typeof UpdatResturantSchema>

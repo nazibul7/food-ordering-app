@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { Resturant } from "../models/resturant.model";
-import { resturantSchema, resturantSchemaType } from "../utils/zod.validation";
+import { resturantSchema, resturantSchemaType, UpdatResturantSchema } from "../utils/zod.validation";
 
 import { uploadOnCloudinary } from "../utils/cloudinary";
+import { ZodError } from "zod";
 
 export const createResturant = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -62,5 +63,25 @@ export const getResturant = async (req: Request, res: Response, next: NextFuncti
         res.status(200).json(resturant)
     } catch (error) {
         next(error)
+    }
+}
+
+export const updateResturant=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const data=UpdatResturantSchema.parse(req.body)
+        const userId=req.userId || "671671ca44d4b47821aa6025"
+        const existingResturant=await Resturant.findOne({user:userId})
+        if(!existingResturant){
+            return res.status(404).json("No resturant found for update")
+        }
+        const updateResturant=await Resturant.updateOne({user:userId},data)
+        res.status(200).json(updateResturant)
+    } catch (error) {
+        if(error instanceof ZodError){
+            return next(error.errors[0])
+        }
+        else{
+            next(error)
+        }
     }
 }
