@@ -1,11 +1,12 @@
 import { Resturant } from "@/types";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useCreateResturant = () => {
+    const queryClient = useQueryClient()
     const { getAccessTokenSilently } = useAuth0()
     const creatResturantRequest = async (resturantFormData: FormData): Promise<Resturant> => {
         const accessToken = await getAccessTokenSilently()
@@ -21,7 +22,11 @@ export const useCreateResturant = () => {
         }
         return response.json()
     }
-    const { mutateAsync: creatResturant, isLoading, isSuccess, error } = useMutation(creatResturantRequest)
+    const { mutateAsync: creatResturant, isLoading, isSuccess, error } = useMutation(creatResturantRequest, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("resturant")
+        }
+    })
     if (isSuccess) {
         toast.success("Resturant created")
     }
@@ -30,7 +35,6 @@ export const useCreateResturant = () => {
     }
     return { creatResturant, isLoading }
 }
-
 
 export const useGetResturant = () => {
     const { getAccessTokenSilently } = useAuth0()
@@ -50,7 +54,7 @@ export const useGetResturant = () => {
                     country: "",
                     deliveryPrice: 0,
                     estimatedDeliveryTime: 0,
-                    cusines: [],    
+                    cusines: [],
                     menuItems: [{ name: "", price: 0 }],
                     imageFile: undefined
                 }
@@ -63,4 +67,35 @@ export const useGetResturant = () => {
     const { data: resturant, isLoading } = useQuery("resturant", getResturantResponse)
 
     return { resturant, isLoading }
+}
+
+export const useUpdateResturant = () => {
+    const { getAccessTokenSilently } = useAuth0()
+    const queryClient = useQueryClient()
+    const updateResturantRequest = async (data: FormData): Promise<Resturant> => {
+        const accessToken = await getAccessTokenSilently()
+        const response = await fetch(`${API_BASE_URL}/api/resturant`, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            body: data
+        })
+        if (!response.ok) {
+            throw new Error("Unable to update resturant")
+        }
+        return response.json()
+    }
+    const { mutateAsync: updateResturant, isLoading, isSuccess, error } = useMutation(updateResturantRequest, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("resturant")
+        }
+    })
+    if (isSuccess) {
+        toast.success("Resturant updated")
+    }
+    if (error) {
+        toast.error(error.toString())
+    }
+    return { updateResturant, isLoading }
 }

@@ -14,22 +14,26 @@ import { useEffect } from "react"
 
 const formSchema = z.object({
     resturantName: z.string().trim().min(1, "Resturant name is required"),
-    city: z.string({ required_error: "City name is required" }),
-    country: z.string({ required_error: "Country name is required" }),
+    city: z.string().min(1, "City is required"),
+    country: z.string().min(1, "Country is required"),
     deliveryPrice: z.coerce.number({
         required_error: "Delivery price is required",
         invalid_type_error: "Must be a valid number",
-    }),
+    }).refine((val) => val > 0, { message: "Price must be grater than 0" }),
     estimatedDeliveryTime: z.coerce.number({
         required_error: "Estimated delivery time is required",
         invalid_type_error: "Must be a valid number",
-    }),
+    }).refine((val) => val > 0, { message: "Delivery time must be greater than 0 minutes" }),
     cusines: z.array(z.string()).min(1, "Please select at least one item"),
     menuItems: z.array(z.object({
-        name: z.string().min(1, "Name is required"),
+        name: z.string().trim().min(1, "Name is required"),
         price: z.coerce.number().min(1, "Price is required")
     })),
-    imageFile: z.instanceof(File, { message: "Image is required" })
+    imageUrl: z.string().optional(),
+    imageFile: z.instanceof(File, { message: "Image is required" }).optional()
+}).refine((data) => data.imageFile || data.imageUrl, {
+    message: "Either image url or image file is required",
+    path: ["imageFile"]
 })
 
 type resturantFormType = z.infer<typeof formSchema>
@@ -53,6 +57,7 @@ const ManageResturantForm = ({ resturant, onSave, isLoading }: Props) => {
             imageFile: undefined // Default for file input
         },
     })
+    
     const onSubmit = (formDataJson: resturantFormType) => {
         try {
             const formData = new FormData()
@@ -69,7 +74,9 @@ const ManageResturantForm = ({ resturant, onSave, isLoading }: Props) => {
             formDataJson.cusines.forEach((item, index) => {
                 formData.append(`cusines[${index}]`, item)
             })
-            formData.append('imageFile', formDataJson.imageFile)
+            if (formDataJson.imageFile) {
+                formData.append('imageFile', formDataJson.imageFile)
+            }
             formData.append('lastUpdated', DateTime.now().toISO())
             onSave(formData)
         } catch (error) {

@@ -24,8 +24,7 @@ export default function MenuSection() {
                             <MenuItemInput key={field.id} index={index} removeMenuItem={() => remove(index)} />
                         ))}
                     </FormItem>
-                    <Button type="button" onClick={() => append({ name: "", price: "" })}>Add Menu Item</Button>
-                    <FormMessage/>
+                    <Button type="button" onClick={() => append({ name: "", price: 0 })}>Add Menu Item</Button>
                 </>
             )}>
             </FormField>
