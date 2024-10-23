@@ -33,7 +33,7 @@ export const createResturant = async (req: Request, res: Response, next: NextFun
             return res.status(400).json("Unable to upload file")
         }
         const imageUrl = cloudinaryData.secure_url
-        
+
         const data = await Resturant.create({
             resturantName: inputData.resturantName,
             city: inputData.city,
@@ -66,21 +66,41 @@ export const getResturant = async (req: Request, res: Response, next: NextFuncti
     }
 }
 
-export const updateResturant=async(req:Request,res:Response,next:NextFunction)=>{
+export const updateResturant = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data=UpdatResturantSchema.parse(req.body)
-        const userId=req.userId || "671671ca44d4b47821aa6025"
-        const existingResturant=await Resturant.findOne({user:userId})
-        if(!existingResturant){
+        const parsedBody = {
+            ...req.body,
+            deliveryPrice: req.body?.deliveryPrice ? parseFloat(req.body.deliveryPrice) : undefined, // Corrected conditional parsing
+            estimatedDeliveryTime: req.body?.estimatedDeliveryTime ? parseFloat(req.body.estimatedDeliveryTime) : undefined, // Conditionally parse
+            menuItems: req.body?.menuItems ? req.body.menuItems.map((item: { name: string, price: string }) => ({
+                ...item,
+                price: item?.price ? parseFloat(item.price) : undefined // Conditionally parse price
+            })) : undefined // Handle when menuItems is undefined
+        };
+        
+        const data = UpdatResturantSchema.parse(parsedBody)
+        const userId = req.userId
+        const existingResturant = await Resturant.findOne({ user: userId })
+        if (!existingResturant) {
             return res.status(404).json("No resturant found for update")
         }
-        const updateResturant=await Resturant.updateOne({user:userId},data)
+        const updateResturant = await Resturant.updateOne({ user: userId }, data)
+        if (req.file) {
+            const filePath = req.file?.path
+            const cloudinaryData = await uploadOnCloudinary(filePath as string)
+            if (!cloudinaryData) {
+                return res.status(400).json("Unable to upload file")
+            }
+            const imageUrl = cloudinaryData.secure_url
+            existingResturant.imageUrl = imageUrl
+            await existingResturant.save()
+        }
         res.status(200).json(updateResturant)
     } catch (error) {
-        if(error instanceof ZodError){
+        if (error instanceof ZodError) {
             return next(error.errors[0])
         }
-        else{
+        else {
             next(error)
         }
     }

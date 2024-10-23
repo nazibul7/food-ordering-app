@@ -12,6 +12,8 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
         }
         const newUser = await User.create(req.body)
         await newUser.save()
+        console.log("create user called");
+        
         res.status(201).json(newUser)
     } catch (error) {
         next(error)
@@ -36,6 +38,7 @@ export const updateCurrentUser = async (req: Request, res: Response, next: NextF
         user.country = country
 
         await user.save()
+        console.log("update user called");
         res.status(200).json(user)
     } catch (error) {
         console.log(error);
