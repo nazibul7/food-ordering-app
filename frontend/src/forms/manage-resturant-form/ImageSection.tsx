@@ -6,7 +6,6 @@ import { useFormContext } from "react-hook-form"
 export default function ImageSection() {
     const { control, watch } = useFormContext()
     const existingImage = watch("imageUrl")
-    
     return (
         <div className="space-y-2">
             <div>
@@ -24,7 +23,6 @@ export default function ImageSection() {
                         <FormControl>
                             <Input type="file" className="bg-white" accept=".jpg,.jpeg,.png"
                                 onChange={(event) => field.onChange(event.target.files ? event.target.files[0] : null)}
-                                value={field.value}
                             />
                         </FormControl>
                         <FormMessage />
