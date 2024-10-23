@@ -1,0 +1,7 @@
+The issue you're seeing with the extra fields like imageUrl being logged in the console is because form.watch() tracks all the fields in your form, including any fields that are set in the form's default values or passed via form.reset() when editing an existing restaurant.
+
+Why is imageUrl showing in form.watch()?
+In your schema, the field imageUrl is marked as optional and will still exist if it's populated either by the backend or manually in the form.
+Even if you're not explicitly interacting with the imageUrl field in the UI, it's still part of your form.defaultValues or gets injected when you call form.reset() to pre-populate the form with data (e.g., when editing a restaurant).
+What's happening here:
+On form reset: When you pass the resturant data to the form via form.reset(resturant), the imageUrl from the resturant data (e.g., fetched from the backend) gets included in the form's state. So, form.watch() will track that field as well, alongside others like resturantName, city, and menuItems.
