@@ -1,0 +1,27 @@
+In React, when using the .map() method to render a list of items, the returned value from the callback function must be a valid ReactNode (like a string, number, or valid JSX element). If the callback function does not return a value, it defaults to returning undefined, which leads to errors because React does not know how to render undefined.
+
+1)
+
+return (
+    <span>User searched for {city}
+        <p>
+            {results?.data.map((restaurant) => (
+                <span key={restaurant.id}>{restaurant}</span> // Ensure to return a valid ReactNode
+            ))}
+        </p>
+    </span>
+);
+
+2)
+
+return (
+    <span>User searched for {city}
+        <p>
+            {results?.data.map((restaurant) => {
+                return (
+                    <span key={restaurant.id}>{restaurant}</span> // Valid ReactNode returned
+                );
+            })}
+        </p>
+    </span>
+);
