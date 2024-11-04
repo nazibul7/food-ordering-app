@@ -16,7 +16,7 @@ type MenuItem = {
 export type Resturant = {
     _id: string
     user: string
-    resturantname: string
+    resturantName: string
     city: string
     country: string
     deliveryPrice: number
@@ -25,4 +25,13 @@ export type Resturant = {
     menuItems: MenuItem[]
     imageUrl: string
     lastUpdated: string
+}
+
+export type ResturantSearchResponse={
+    data:Resturant[]
+    pagination:{
+        total:number
+        page:number
+        pages:number
+    }
 }
