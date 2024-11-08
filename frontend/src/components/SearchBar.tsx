@@ -5,48 +5,55 @@ import { z } from "zod"
 import { Form, FormControl, FormField, FormItem } from "./ui/form"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
+import { useEffect } from "react"
 
 const formSchema = z.object({
-    searchQuery: z.string().trim().min(1, "Resturant name is required")
+    inputSearchQuery: z.string().trim().min(1, "Name is required")
 })
 export type SearchForm = z.infer<typeof formSchema>
 type Props = {
     onSubmit: (formData: SearchForm) => void
     placeHolder: string
     onReset?: () => void
+    searchQuery?: string
 }
 
-export default function SearchBar({ onSubmit, placeHolder, onReset }: Props) {
+export default function SearchBar({ onSubmit, placeHolder, onReset, searchQuery }: Props) {
     const form = useForm<SearchForm>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            searchQuery: ''
+            inputSearchQuery: ''
         }
     })
 
     const handleReset = () => {
         form.reset({
-            searchQuery: ""
+            inputSearchQuery: ""
         })
         if (onReset) {
             onReset()
         }
     }
+    useEffect(() => {
+        form.reset({
+            inputSearchQuery: searchQuery
+        })
+    }, [searchQuery, form])
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className={`flex items-center gap-3 border-2 rounded-full p-3 ${form.formState.errors.searchQuery && 'border-red-500'}`}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className={`flex items-center gap-3 border-2 rounded-full p-3 ${form.formState.errors.inputSearchQuery && 'border-red-500'}`}>
                 <div className="flex items-center flex-1">
                     <Search strokeWidth={2.5} size={30} className="ml-1 text-orange-500 hidden md:block" />
-                    <FormField control={form.control} name="searchQuery" render={({ field }) => {
+                    <FormField control={form.control} name="inputSearchQuery" render={({ field }) => {
                         return <FormItem className="flex-1">
                             <FormControl>
-                                <Input {...field} placeholder={placeHolder} className="border-none shadow-none focus-visible:ring-0" />
+                                <Input {...field} placeholder={placeHolder} className="bg-none border-none shadow-none focus-visible:ring-0" />
                             </FormControl>
                         </FormItem>
                     }} />
                 </div>
                 <div className="flex gap-1">
-                    {form.formState.isDirty && <Button onClick={handleReset} type="button" variant="outline" className="rounded-full">Clear</Button>}
+                    {(form.formState.isDirty || searchQuery) && <Button onClick={handleReset} type="button" variant="outline" className="rounded-full">Clear</Button>}
                     <Button type="submit" className="rounded-full bg-orange-500">Search</Button>
                 </div>
             </form>
