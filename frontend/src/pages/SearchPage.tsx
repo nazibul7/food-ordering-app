@@ -1,4 +1,5 @@
 import { useSearchResturant } from "@/api/ResturantApi2"
+import PaginationComp from "@/components/PaginationComp"
 import SearchBar, { SearchForm } from "@/components/SearchBar"
 import SearchResultCard from "@/components/SearchResultCard"
 import SearchResultInfo from "@/components/SearchResultInfo"
@@ -19,7 +20,8 @@ export default function SearchPage() {
         selectedCusine: [],
         sortOptions: 'bestMatch'
     })
-    const { results, isLoading } = useSearchResturant(searchState,city)
+    
+    const { results, isLoading } = useSearchResturant(searchState, city)
 
     if (isLoading) {
         return <span>Loading...</span>
@@ -37,6 +39,11 @@ export default function SearchPage() {
             return { ...prev, searchQuery: '' }
         })
     }
+    const setPage = (page:number) => {
+        setSearchState((prev) => {
+            return { ...prev, page }
+        })
+    }
     return (
         <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
             <div id="cusine-list">
@@ -48,6 +55,7 @@ export default function SearchPage() {
                 {results.data.map((resturant, index) => {
                     return <SearchResultCard key={index} resturant={resturant} />
                 })}
+                <PaginationComp onPageChange={setPage} page={results.pagination.page} pages={results.pagination.pages} />
             </div>
         </div>
     )
