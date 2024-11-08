@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 const HomePage = () => {
     const navigate=useNavigate()
     const handleSearchSubmit=(searchFormValues:SearchForm)=>{
-        navigate(`/search/${searchFormValues.searchQuery}`)
+        navigate(`/search/${searchFormValues.inputSearchQuery}`)
     }
     return (
         <div className="flex flex-col gap-12">
@@ -13,7 +13,7 @@ const HomePage = () => {
                 <div className="text-orange-600 font-bold text-5xl tracking-tight">Tuck into a takeway today</div>
                 <div className="text-sm">Food is just a click away!</div>
                 <div className=" ">
-                    <Searchbar onSubmit={handleSearchSubmit} placeHolder="Search by City or Town"/>
+                    <Searchbar  onSubmit={handleSearchSubmit} placeHolder="Search by City or Town"/>
                 </div>
             </div>
             <div className="flex flex-col md:flex-row items-center gap-10">
