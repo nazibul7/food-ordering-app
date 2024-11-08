@@ -28,9 +28,19 @@ export const searchResturnat = async (req: Request, res: Response, next: NextFun
                 }
             })
         }
-        queryObj = {
-            ...(searchQuery && { $or: [{ resturantName: new RegExp(searchQuery, "i") }, { cusines: { $in: [new RegExp(searchQuery, "i")] } }] }),
-            ...(selectedCusine && { cusines: { $all: selectedCusine.split(",").map(c => new RegExp(c, "i")) } }),
+        // queryObj = {
+        //     ...(searchQuery && { $or: [{ resturantName: new RegExp(searchQuery, "i") }, { cusines: { $in: [new RegExp(searchQuery, "i")] } }] }),
+        //     ...(selectedCusine && { cusines: { $all: selectedCusine.split(",").map(c => new RegExp(c, "i")) } }),
+        // }
+
+        if (searchQuery) {
+            queryObj.$or = [
+                { resturantName: new RegExp(searchQuery, "i") },
+                { cusines: { $in: [new RegExp(searchQuery, "i")] } },
+            ];
+        }
+        if (selectedCusine) {
+            queryObj.cusines = { $all: selectedCusine.split(",").map((c) => new RegExp(c, "i")) };
         }
         const pageSize = 10
         const skip = (page - 1) * pageSize
