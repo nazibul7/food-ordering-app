@@ -1,8 +1,10 @@
 import { useSearchResturant } from "@/api/ResturantApi2"
+import CusineFilter from "@/components/CusineFilter"
 import PaginationComp from "@/components/PaginationComp"
 import SearchBar, { SearchForm } from "@/components/SearchBar"
 import SearchResultCard from "@/components/SearchResultCard"
 import SearchResultInfo from "@/components/SearchResultInfo"
+import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useParams } from "react-router-dom"
 
@@ -14,13 +16,14 @@ export type SearchState = {
 }
 export default function SearchPage() {
     const { city } = useParams()
+    const [isExpande, setIsExpand] = useState(false)
     const [searchState, setSearchState] = useState<SearchState>({
         searchQuery: '',
         page: 1,
         selectedCusine: [],
         sortOptions: 'bestMatch'
     })
-    
+
     const { results, isLoading } = useSearchResturant(searchState, city)
 
     if (isLoading) {
@@ -39,15 +42,23 @@ export default function SearchPage() {
             return { ...prev, searchQuery: '' }
         })
     }
-    const setPage = (page:number) => {
+    const setPage = (page: number) => {
         setSearchState((prev) => {
             return { ...prev, page }
         })
     }
+    const cusineOnChange = (selectedCusine: string[]) => {
+        setSearchState((prev) => {
+            return { ...prev, selectedCusine }
+        })
+    }
+    const expandOnChnage = () => {
+        setIsExpand(prev => !prev)
+    }
     return (
         <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
             <div id="cusine-list">
-                Insert cusine here
+                <CusineFilter isExpandes={isExpande} onExpandedClick={expandOnChnage} selectedCusine={searchState.selectedCusine} onChange={cusineOnChange} />
             </div>
             <div id="main-content" className="flex flex-col gap-5">
                 <SearchBar searchQuery={searchState.searchQuery} onReset={resetSearch} onSubmit={submitSearchQuery} placeHolder="Search by cuisine or resturant name" />
