@@ -12,7 +12,6 @@ type Props = {
 }
 
 export default function CusineFilter({ selectedCusine, onChange, isExpandes, onExpandedClick }: Props) {
-    // console.log(selectedCusine);
     const handleCusineReset = () => {
         onChange([])
     }

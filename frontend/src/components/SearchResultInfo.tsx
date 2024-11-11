@@ -12,7 +12,6 @@ export default function SearchResultInfo({ city, total }: Props) {
                 {total} Resturants found in {city}
                 <Link to={'/'} className="ml-1 text-sm font-semibold underline cursor-pointer text-blue-500">Change location</Link>
             </span>
-            insert sort drop down here
         </div>
     )
 }
