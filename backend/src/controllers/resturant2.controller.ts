@@ -68,3 +68,22 @@ export const searchResturnat = async (req: Request, res: Response, next: NextFun
         }
     }
 }
+
+
+const ResturantIdSchema = z.object({
+    resturantId: z.string().trim().min(1, "Resturant ID is required")
+})
+type TResturantId = z.infer<typeof ResturantIdSchema>
+
+export const getResturant = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const rersturantId:TResturantId = ResturantIdSchema.parse({resturantId:req.params.resturantId})
+        const resturant=await Resturant.findById(rersturantId.resturantId)
+        if(!resturant){
+            return res.status(404).json("No resturant found")
+        }
+        return res.status(200).json(resturant)
+    } catch (error) {
+        next(error)
+    }
+}
