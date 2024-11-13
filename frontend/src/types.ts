@@ -8,7 +8,7 @@ export type User = {
 }
 
 
-type MenuItem = {
+export type MenuItem = {
     _id: string
     name: string
     price: number
