@@ -12,7 +12,10 @@ import OrderSummary from "./OrderSummary"
 export default function DetailsPage() {
     const { resturantId } = useParams()
     const { result, isLoading } = useGetResturantById(resturantId)
-    const [cartItem, setCartItem] = useState<TCartItem[]>([])
+    const [cartItem, setCartItem] = useState<TCartItem[]>(() => {
+        const data = sessionStorage.getItem(`cartItems-${resturantId}`)
+        return data ? JSON.parse(data) : []
+    })
     if (isLoading || !result) {
         return "Loading..."
     }
@@ -35,12 +38,14 @@ export default function DetailsPage() {
                     }
                 ]
             }
+            sessionStorage.setItem(`cartItems-${resturantId}`, JSON.stringify(updateCartItem))
             return updateCartItem
         })
     }
     const removecartItem = (menuItem: MenuItem) => {
         setCartItem((prev) => {
             const updateCartItem = prev.filter(menu => menu._id !== menuItem._id)
+            sessionStorage.setItem(`cartItems-${resturantId}`, JSON.stringify(updateCartItem))
             return updateCartItem
         })
     }
@@ -59,7 +64,7 @@ export default function DetailsPage() {
                 </div>
                 <div>
                     <Card>
-                        <OrderSummary cartItem={cartItem} resturant={result} removeFromCart={removecartItem}/>
+                        <OrderSummary cartItem={cartItem} resturant={result} removeFromCart={removecartItem} />
                     </Card>
                 </div>
             </div>
