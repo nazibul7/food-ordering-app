@@ -27,11 +27,22 @@ export type Resturant = {
     lastUpdated: string
 }
 
-export type ResturantSearchResponse={
-    data:Resturant[]
-    pagination:{
-        total:number
-        page:number
-        pages:number
+export type ResturantSearchResponse = {
+    data: Resturant[]
+    pagination: {
+        total: number
+        page: number
+        pages: number
     }
+}
+
+export type TCartItem = {
+    _id: string
+    name: string
+    price: number
+    quantity: number
+}
+
+export type TMenuItem={
+    menuItem:MenuItem
 }

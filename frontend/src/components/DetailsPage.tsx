@@ -3,12 +3,46 @@ import { useParams } from "react-router-dom"
 import { AspectRatio } from "./ui/aspect-ratio"
 import ResturantInfo from "./ResturantInfo"
 import MenuItemComp from "./MenuItemComp"
+import { useState } from "react"
+import { MenuItem, TCartItem, } from "@/types"
+import { Card } from "./ui/card"
+import OrderSummary from "./OrderSummary"
+
 
 export default function DetailsPage() {
     const { resturantId } = useParams()
     const { result, isLoading } = useGetResturantById(resturantId)
+    const [cartItem, setCartItem] = useState<TCartItem[]>([])
     if (isLoading || !result) {
         return "Loading..."
+    }
+    const addCartItem = (menuItem: MenuItem) => {
+        setCartItem((prevCartItem) => {
+            const existingCartItem = prevCartItem.find((cartItem) => cartItem._id == menuItem._id)
+            let updateCartItem;
+            if (existingCartItem) {
+                updateCartItem = prevCartItem.map((cartItem) => (
+                    { ...cartItem, quantity: cartItem.quantity + 1 }
+                ))
+            }
+            else {
+                updateCartItem = [
+                    ...prevCartItem, {
+                        _id: menuItem._id,
+                        name: menuItem.name,
+                        price: menuItem.price,
+                        quantity: 1
+                    }
+                ]
+            }
+            return updateCartItem
+        })
+    }
+    const removecartItem = (menuItem: MenuItem) => {
+        setCartItem((prev) => {
+            const updateCartItem = prev.filter(menu => menu._id !== menuItem._id)
+            return updateCartItem
+        })
     }
     return (
         <div className="flex flex-col gap-10">
@@ -19,11 +53,15 @@ export default function DetailsPage() {
                 <div className="flex flex-col gap-10">
                     <ResturantInfo resturant={result} />
                     <span className="text-2xl font-bold tracking-tight">Menu</span>
-                    {result.menuItems.map((menu,index)=>(
-                        <MenuItemComp key={index} menuItem={menu}/>
+                    {result.menuItems.map((menu, index) => (
+                        <MenuItemComp key={index} menuItem={menu} addToCart={addCartItem} />
                     ))}
                 </div>
-                <div></div>
+                <div>
+                    <Card>
+                        <OrderSummary cartItem={cartItem} resturant={result} removeFromCart={removecartItem}/>
+                    </Card>
+                </div>
             </div>
         </div>
     )

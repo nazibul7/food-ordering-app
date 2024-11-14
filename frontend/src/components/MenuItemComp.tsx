@@ -1,13 +1,14 @@
 import { MenuItem } from "@/types"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 
-type TMenuItem={
-    menuItem:MenuItem
+export type TMenuItem={
+    menuItem:MenuItem,
+    addToCart:(menu:MenuItem)=>void
 }
 
-export default function MenuItemComp({menuItem}:TMenuItem) {
+export default function MenuItemComp({menuItem,addToCart}:TMenuItem) {
   return (
-    <Card className="cursor-pointer">
+    <Card className="cursor-pointer" onClick={()=>addToCart(menuItem)}>
         <CardHeader>
             <CardTitle>{menuItem.name}</CardTitle>
         </CardHeader>
