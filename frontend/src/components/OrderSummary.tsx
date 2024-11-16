@@ -1,9 +1,8 @@
 import { MenuItem, Resturant, TCartItem } from "@/types"
-import { CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card"
+import { CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { Separator } from "./ui/separator"
 import { Trash } from "lucide-react"
-import CheckoutBtn from "./CheckoutBtn"
 
 type TOrderSummary = {
     resturant: Resturant
@@ -46,9 +45,6 @@ export default function OrderSummary({ resturant, cartItem, removeFromCart }: TO
                 </div>
                 <Separator />
             </CardContent>
-            <CardFooter>
-                <CheckoutBtn/>
-            </CardFooter>
         </>
     )
 }

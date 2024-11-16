@@ -5,8 +5,10 @@ import ResturantInfo from "./ResturantInfo"
 import MenuItemComp from "./MenuItemComp"
 import { useState } from "react"
 import { MenuItem, TCartItem, } from "@/types"
-import { Card } from "./ui/card"
+import { Card, CardFooter } from "./ui/card"
 import OrderSummary from "./OrderSummary"
+import CheckoutBtn from "./CheckoutBtn"
+import { UserFormType } from "@/forms/user-profile-form/UserProfileForm"
 
 
 export default function DetailsPage() {
@@ -49,6 +51,9 @@ export default function DetailsPage() {
             return updateCartItem
         })
     }
+    const onCheckoutHandler=(UserFormData:UserFormType)=>{
+        console.log(UserFormData);
+    }
     return (
         <div className="flex flex-col gap-10">
             <AspectRatio ratio={16 / 5} >
@@ -65,6 +70,9 @@ export default function DetailsPage() {
                 <div>
                     <Card>
                         <OrderSummary cartItem={cartItem} resturant={result} removeFromCart={removecartItem} />
+                        <CardFooter>
+                            <CheckoutBtn onCheckout={onCheckoutHandler} disabled={cartItem.length<=0} />
+                        </CardFooter>
                     </Card>
                 </div>
             </div>
