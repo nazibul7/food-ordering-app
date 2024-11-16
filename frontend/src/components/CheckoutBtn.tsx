@@ -35,7 +35,7 @@ export default function CheckoutBtn({onCheckout,disabled}:TCheckOutProps) {
                 <Button className="bg-orange-500 flex-1" disabled={disabled}>Go to check out</Button>
             </DialogTrigger>
             <DialogContent className="max-w-[425px] md:min-w-[700px] bg-gray-50">
-                <UserProfileForm currentUser={currentUser as User} onSave={onCheckout} isLoading={isLoading} />
+                <UserProfileForm currentUser={currentUser as User} onSave={onCheckout} isLoading={isLoading} title="Confirm Delivery Details" btnText="Continue to payment"/>
             </DialogContent>
         </Dialog>
     )
