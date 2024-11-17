@@ -9,20 +9,24 @@ import { Card, CardFooter } from "./ui/card"
 import OrderSummary from "./OrderSummary"
 import CheckoutBtn from "./CheckoutBtn"
 import { UserFormType } from "@/forms/user-profile-form/UserProfileForm"
+import { useCreateCheckoutSession } from "@/api/OrderApi"
 
 
 export default function DetailsPage() {
     const { resturantId } = useParams()
+    console.log(resturantId);
+
     const { result, isLoading } = useGetResturantById(resturantId)
-    const [cartItem, setCartItem] = useState<TCartItem[]>(() => {
+    const { createCheckoutSession, isLoading: isCheckoutLoading } = useCreateCheckoutSession()
+    const [cartItems, setCartItems] = useState<TCartItem[]>(() => {
         const data = sessionStorage.getItem(`cartItems-${resturantId}`)
         return data ? JSON.parse(data) : []
     })
-    if (isLoading || !result) {
+    if (isLoading || !result || isCheckoutLoading) {
         return "Loading..."
     }
     const addCartItem = (menuItem: MenuItem) => {
-        setCartItem((prevCartItem) => {
+        setCartItems((prevCartItem) => {
             const existingCartItem = prevCartItem.find((cartItem) => cartItem._id == menuItem._id)
             let updateCartItem;
             if (existingCartItem) {
@@ -45,14 +49,39 @@ export default function DetailsPage() {
         })
     }
     const removecartItem = (menuItem: MenuItem) => {
-        setCartItem((prev) => {
+        setCartItems((prev) => {
             const updateCartItem = prev.filter(menu => menu._id !== menuItem._id)
             sessionStorage.setItem(`cartItems-${resturantId}`, JSON.stringify(updateCartItem))
             return updateCartItem
         })
     }
-    const onCheckoutHandler=(UserFormData:UserFormType)=>{
-        console.log(UserFormData);
+    const onCheckoutHandler = async (UserFormData: UserFormType) => {
+        const restaurantId = result._id; 
+        const checkoutData = {
+            cartItems: cartItems.map((cartItem) => {
+                return {
+                    menuItemId: cartItem._id,
+                    name: cartItem.name,
+                    quantity: cartItem.quantity
+                }
+            }),
+            resturantId: restaurantId,
+            deliveryDeatils: {
+                email: UserFormData.email as string,
+                name: UserFormData.name,
+                addressLine1: UserFormData.addressLine1,
+                city: UserFormData.city,
+                country: UserFormData.country
+            },
+        }
+
+        const data = await createCheckoutSession(checkoutData)
+        if (data?.url) {
+            window.location.href = data.url;
+        } else {
+            console.error("Checkout URL is missing");
+        }
+        
     }
     return (
         <div className="flex flex-col gap-10">
@@ -69,9 +98,9 @@ export default function DetailsPage() {
                 </div>
                 <div>
                     <Card>
-                        <OrderSummary cartItem={cartItem} resturant={result} removeFromCart={removecartItem} />
+                        <OrderSummary cartItem={cartItems} resturant={result} removeFromCart={removecartItem} />
                         <CardFooter>
-                            <CheckoutBtn onCheckout={onCheckoutHandler} disabled={cartItem.length<=0} />
+                            <CheckoutBtn onCheckout={onCheckoutHandler} disabled={cartItems.length <= 0} isLoading={isCheckoutLoading} />
                         </CardFooter>
                     </Card>
                 </div>
