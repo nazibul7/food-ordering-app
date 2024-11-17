@@ -9,12 +9,13 @@ import { User } from "@/types"
 
 type TCheckOutProps = {
     onCheckout: (UserFormData:UserFormType) => void
-    disabled:boolean
+    disabled:boolean,
+    isLoading:boolean
 }
 
-export default function CheckoutBtn({onCheckout,disabled}:TCheckOutProps) {
+export default function CheckoutBtn({onCheckout,disabled,isLoading}:TCheckOutProps) {
     const { isAuthenticated, isLoading: isAuthLoading, loginWithRedirect } = useAuth0()
-    const { currentUser, isLoading } = useGetUser()
+    const { currentUser, isLoading:isGetUserLoading } = useGetUser()
     const { pathname } = useLocation()
     const onLogin = async () => {
         await loginWithRedirect({
@@ -26,7 +27,7 @@ export default function CheckoutBtn({onCheckout,disabled}:TCheckOutProps) {
     if (!isAuthenticated) {
         return <Button onClick={onLogin} className="bg-orange-500 flex-1">Login to check out</Button>
     }
-    if (isAuthLoading || !currentUser) {
+    if (isAuthLoading || !currentUser || isLoading) {
         return <LoadingButton />
     }
     return (
@@ -35,7 +36,7 @@ export default function CheckoutBtn({onCheckout,disabled}:TCheckOutProps) {
                 <Button className="bg-orange-500 flex-1" disabled={disabled}>Go to check out</Button>
             </DialogTrigger>
             <DialogContent className="max-w-[425px] md:min-w-[700px] bg-gray-50">
-                <UserProfileForm currentUser={currentUser as User} onSave={onCheckout} isLoading={isLoading} title="Confirm Delivery Details" btnText="Continue to payment"/>
+                <UserProfileForm currentUser={currentUser as User} onSave={onCheckout} isLoading={isGetUserLoading} title="Confirm Delivery Details" btnText="Continue to payment"/>
             </DialogContent>
         </Dialog>
     )
