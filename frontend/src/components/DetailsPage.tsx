@@ -14,8 +14,6 @@ import { useCreateCheckoutSession } from "@/api/OrderApi"
 
 export default function DetailsPage() {
     const { resturantId } = useParams()
-    console.log(resturantId);
-
     const { result, isLoading } = useGetResturantById(resturantId)
     const { createCheckoutSession, isLoading: isCheckoutLoading } = useCreateCheckoutSession()
     const [cartItems, setCartItems] = useState<TCartItem[]>(() => {
