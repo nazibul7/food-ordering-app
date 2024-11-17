@@ -23,9 +23,10 @@ export const useCreateCheckoutSession = () => {
     const createCheckoutSessionRequest = async (checkoutSessionRequest:TCheckoutSessionRequest) => {
         try {
             const accessToken = await getAccessTokenSilently()
-            const response = await fetch(`${API_BASE_URL}/api/order//checkout/create-checkout-session`, {
+            const response = await fetch(`${API_BASE_URL}/api/order/checkout/create-checkout-session`, {
                 method: "POST",
                 headers: {
+                    'Content-Type': 'application/json',
                     "Authorization": `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(checkoutSessionRequest)
