@@ -96,3 +96,16 @@ const createSession = async (lineItem: Stripe.Checkout.SessionCreateParams.LineI
     })
     return sessionData
 }
+
+
+
+export const stripeWebhookHandler=async(req:Request,res:Response)=>{
+    try {
+        console.log("RECEIVED EVENT");
+        console.log("===============");
+        console.log("EVENT",req.body);
+        res.send()
+    } catch (error) {
+        
+    }
+}
