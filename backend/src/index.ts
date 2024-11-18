@@ -11,6 +11,7 @@ import { globalErrorHandlerMiddleware } from "./middleweres/globalErrorHandler"
 const app = express()
 
 // middlewares
+app.use('/api/order/checkout/webhook', express.raw({type:"application/json"}))
 app.use(express.json())
 app.use(cors())
 app.get('/health', async (req: Request, res: Response) => {
