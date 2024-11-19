@@ -1,5 +1,6 @@
+import { TOrderStatus } from "@/types";
 import { useAuth0 } from "@auth0/auth0-react"
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -20,7 +21,7 @@ type TCheckoutSessionRequest = {
 }
 export const useCreateCheckoutSession = () => {
     const { getAccessTokenSilently } = useAuth0()
-    const createCheckoutSessionRequest = async (checkoutSessionRequest:TCheckoutSessionRequest) => {
+    const createCheckoutSessionRequest = async (checkoutSessionRequest: TCheckoutSessionRequest) => {
         try {
             const accessToken = await getAccessTokenSilently()
             const response = await fetch(`${API_BASE_URL}/api/order/checkout/create-checkout-session`, {
@@ -47,4 +48,30 @@ export const useCreateCheckoutSession = () => {
     return {
         createCheckoutSession, isLoading
     }
+}
+
+
+
+export const useGetOrders = () => {
+    const { getAccessTokenSilently } = useAuth0()
+    const getOrderRequest = async ():Promise<TOrderStatus[]> => {
+        try {
+            const accessToken = await getAccessTokenSilently()
+            const response = await fetch(`${API_BASE_URL}/api/order`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            })
+            if (!response.ok) {
+                throw new Error("Unable to get orders status")
+            }
+            return response.json()
+        } catch (error ) {
+            console.log(error);
+           return []
+        }
+    }
+    const { data: orders, isLoading } = useQuery("fetchOrders", getOrderRequest)
+    return {orders,isLoading}
 }

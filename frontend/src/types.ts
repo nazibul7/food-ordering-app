@@ -43,6 +43,27 @@ export type TCartItem = {
     quantity: number
 }
 
-export type TMenuItem={
-    menuItem:MenuItem
+export type TMenuItem = {
+    menuItem: MenuItem
+}
+
+export type OrderStatus = "placed" | "paid" | "inProgress" | "outForDelivery" | "delivered"
+export type TOrderStatus = {
+    _id: string
+    resturant: Resturant
+    user: User
+    cartItems: {
+        menuItemId: string,
+        quantity: string
+        name: String
+    }[]
+    deliveryDetails: {
+        name: string
+        addressLine1: string
+        city: string
+    }
+    totalAmount: number
+    status: OrderStatus
+    createdAt: string
+    resturantId: string
 }
