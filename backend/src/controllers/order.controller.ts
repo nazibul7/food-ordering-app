@@ -128,3 +128,15 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
     }
     res.status(200).send()
 }
+
+
+
+
+export const orderStatus = async (req: Request, res: Response) => {
+    try {
+        const orderStatus = await Order.findById({ user: req.userId }).populate("resturant").populate("user")
+        res.status(200).json(orderStatus)
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
