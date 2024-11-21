@@ -10,13 +10,12 @@ export default function OrderStatusPages() {
     if (!orders || orders.length == 0) {
         return "No orders found"
     }
-    console.log(orders);
     
     return (
         <div className=''>
             {orders.map((order)=>(
-                <div className='bg-gray-50 p-10 rounded-lg'>
-                    <OrderStatusHeader key={order._id} order={order}/>
+                <div className='bg-gray-50 p-10 rounded-lg' key={order._id}>
+                    <OrderStatusHeader order={order}/>
                 </div>
             ))}
         </div>
