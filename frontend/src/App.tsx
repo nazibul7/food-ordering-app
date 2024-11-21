@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './Layouts/Layout';
 import ProtectedRoute from './auth/ProtectedRoute';
 import React, { Suspense } from 'react';
+import OrderStatusPages from './pages/OrderStatusPages';
 
 const HomePage = React.lazy(() => import('./pages/HomePage'));
 const AuthCallbackPage = React.lazy(() => import('./pages/AuthCallbackPage'));
@@ -22,6 +23,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path='/user-profile' element={<Layout showHero={false}><UserProfilePage /></Layout>} />
           <Route path='/manage-resturant' element={<Layout showHero={false}><ManageResturantPage /></Layout>} />
+          <Route path='/order-status' element={<Layout showHero={false}><OrderStatusPages/></Layout>}/>
         </Route>
 
         <Route path='*' element={<Navigate to={'/'} />} />
