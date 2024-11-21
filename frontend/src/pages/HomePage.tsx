@@ -18,7 +18,7 @@ const HomePage = () => {
             </div>
             <div className="flex flex-col md:flex-row items-center gap-10">
                 <div className="flex-1">
-                    <img src={landing} alt="" className="" />
+                    <img src={landing} srcSet={`${landing} 1200w, ${landing} 800w, ${landing} 400w`} loading="eager" fetchPriority="high" decoding="async" alt="" className="" />
                 </div>
                 <div className="flex-1 gap-3 text-center flex flex-col justify-center">
                     <div className="font-bold text-3xl">Order Take-away even faster</div>
