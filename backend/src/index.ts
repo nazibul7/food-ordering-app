@@ -3,8 +3,8 @@ import cors from "cors"
 import "dotenv/config"
 import mongoose from "mongoose"
 import userRoutes from "./routes/user.route"
-import resturantRoutes from "./routes/resturant.route"
-import resturant2Routes from './routes/resturant2.route'
+import myresturantRoutes from "./routes/myresturant.route"
+import resturantRoutes from './routes/resturant.route'
 import orderRoute from "./routes/order.route"
 import { globalErrorHandlerMiddleware } from "./middleweres/globalErrorHandler"
 
@@ -18,8 +18,8 @@ app.get('/health', async (req: Request, res: Response) => {
     res.send("Health OK!")
 })
 app.use('/api/v1/user', userRoutes)
+app.use('/api/resturant', myresturantRoutes)
 app.use('/api/resturant', resturantRoutes)
-app.use('/api/resturant', resturant2Routes)
 app.use('/api/order', orderRoute)
 
 // Global error handling middlewares

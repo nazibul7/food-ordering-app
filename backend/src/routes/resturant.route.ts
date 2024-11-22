@@ -1,12 +1,8 @@
 import express from "express"
-import { upload } from "../middleweres/multer"
-import { createResturant, getResturant, updateResturant } from "../controllers/resturant.controller"
-import { jwtCheck, jwtParse } from "../middleweres/auth"
+import { getResturant, searchResturnat } from "../controllers/resturant.controller"
 
-const router = express.Router()
+const route = express.Router()
 
-router.post('/', jwtCheck, jwtParse, upload.single("imageFile"), createResturant)
-router.get('/', jwtCheck, jwtParse, getResturant)
-router.put('/', jwtCheck, jwtParse, upload.single("imageFile"), updateResturant)
-
-export default router
+route.get('/search/:city', searchResturnat)
+route.get('/:resturantId', getResturant)
+export default route
