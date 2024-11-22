@@ -99,3 +99,27 @@ export const useUpdateResturant = () => {
     }
     return { updateResturant, isLoading }
 }
+
+
+export const useGetresturantOrders = () => {
+    const { getAccessTokenSilently } = useAuth0()
+    const resturantOrderResuest = async () => {
+        try {
+            const accessToken = await getAccessTokenSilently()
+            const response = await fetch(`${API_BASE_URL}/api/resturant/order`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            })
+            if (!response.ok) {
+                throw new Error("Unable to fetch orders")
+            }
+            return response.json()
+        } catch (error) {
+            throw new Error("Something went wrong")
+        }
+    }
+    const { data: orderForResturantOwner, isLoading } = useQuery("resturantOrder", resturantOrderResuest)
+    return { orderForResturantOwner, isLoading }
+}

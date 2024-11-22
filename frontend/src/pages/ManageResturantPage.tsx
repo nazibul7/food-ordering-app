@@ -1,4 +1,4 @@
-import { useCreateResturant, useGetResturant, useUpdateResturant } from "@/api/ResturantApi";
+import { useCreateResturant, useGetResturant, useUpdateResturant } from "@/api/MyResturantApi";
 import ManageResturantForm from "@/forms/manage-resturant-form/ManageResturantForm";
 
 export default function ManageResturantPage() {
