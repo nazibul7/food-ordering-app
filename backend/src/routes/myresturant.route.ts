@@ -8,5 +8,5 @@ const router = express.Router()
 router.post('/', jwtCheck, jwtParse, upload.single("imageFile"), createResturant)
 router.get('/', jwtCheck, jwtParse, getResturant)
 router.put('/', jwtCheck, jwtParse, upload.single("imageFile"), updateResturant)
-router.get('/',jwtCheck,jwtParse,ordersResturant)
+router.get('/order',jwtCheck,jwtParse,ordersResturant)
 export default router
