@@ -1,4 +1,4 @@
-import { useSearchResturant } from "@/api/ResturantApi2"
+import { useSearchResturant } from "@/api/ResturantApi"
 import CusineFilter from "@/components/CusineFilter"
 import PaginationComp from "@/components/PaginationComp"
 import SearchBar, { SearchForm } from "@/components/SearchBar"

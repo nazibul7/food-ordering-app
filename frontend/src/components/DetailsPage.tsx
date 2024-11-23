@@ -1,4 +1,4 @@
-import { useGetResturantById } from "@/api/ResturantApi2"
+import { useGetResturantById } from "@/api/ResturantApi"
 import { useParams } from "react-router-dom"
 import { AspectRatio } from "./ui/aspect-ratio"
 import ResturantInfo from "./ResturantInfo"
