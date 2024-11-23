@@ -78,7 +78,7 @@ export const updateResturant = async (req: Request, res: Response, next: NextFun
                 price: item?.price ? parseFloat(item.price) : undefined // Conditionally parse price
             })) : undefined // Handle when menuItems is undefined
         };
-        
+
         const data = UpdatResturantSchema.parse(parsedBody)
         const userId = req.userId
         const existingResturant = await Resturant.findOne({ user: userId })
@@ -108,15 +108,45 @@ export const updateResturant = async (req: Request, res: Response, next: NextFun
 }
 
 
-export const ordersResturant=async(req:Request,res:Response)=>{
+export const ordersResturant = async (req: Request, res: Response) => {
     try {
-        const resturant=await Resturant.findOne({user:req.userId})
-        if(!resturant){
+        const resturant = await Resturant.findOne({ user: req.userId })
+        if (!resturant) {
             return res.status(404).json("No resturant found")
         }
-        const orders=await Order.find({resturant:resturant._id}).populate("resturant").populate("user")
+        const orders = await Order.find({ resturant: resturant._id }).populate("resturant").populate("user")
         res.status(200).json(orders)
     } catch (error) {
         res.status(500).json("Something went wrong");
+    }
+}
+
+
+export const updateOrderStatus = async (req: Request, res: Response) => {
+    try {
+        const orderId = req.params.orderId
+        const status = req.body
+        if (!orderId) {
+            return res.status(404).json("Order id not found")
+        }
+        const order = await Order.findById(orderId)
+        if (!order) {
+            return res.status(404).json("Order not found")
+        }
+        const resturant = await Resturant.findById(order.resturant)
+        if (resturant?.user._id.toString() != req.userId) {
+            return res.status(401).json("You are not allowed to update order status")
+        }
+        const updateOrder = await Order.findByIdAndUpdate(orderId,
+            {
+                $set: {
+                    status
+                }
+            },
+            { new: true, runValidators: true }
+        )
+        res.status(200).json(updateOrder)
+    } catch (error) {
+        return res.status(500).json("Unable to update order status")
     }
 }
