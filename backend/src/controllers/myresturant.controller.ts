@@ -114,7 +114,7 @@ export const ordersResturant=async(req:Request,res:Response)=>{
         if(!resturant){
             return res.status(404).json("No resturant found")
         }
-        const orders=await Order.find({resturant:resturant._id}).populate("Resturant").populate("User")
+        const orders=await Order.find({resturant:resturant._id}).populate("resturant").populate("user")
         res.status(200).json(orders)
     } catch (error) {
         res.status(500).json("Something went wrong");
