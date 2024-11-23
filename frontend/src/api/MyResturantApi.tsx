@@ -1,4 +1,4 @@
-import { Resturant } from "@/types";
+import { Resturant, TOrderStatus } from "@/types";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { toast } from "sonner";
@@ -103,7 +103,7 @@ export const useUpdateResturant = () => {
 
 export const useGetresturantOrders = () => {
     const { getAccessTokenSilently } = useAuth0()
-    const resturantOrderResuest = async () => {
+    const resturantOrderResuest = async ():Promise<TOrderStatus[]> => {
         try {
             const accessToken = await getAccessTokenSilently()
             const response = await fetch(`${API_BASE_URL}/api/resturant/order`, {
