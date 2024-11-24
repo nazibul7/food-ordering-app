@@ -1,15 +1,28 @@
-import { TOrderStatus } from "@/types"
+import { OrderStatus, TOrderStatus } from "@/types"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Separator } from "./ui/separator"
 import { Badge } from "./ui/badge"
 import { Label } from "./ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { ORDER_STATUS } from "@/config/order-status-config"
+import { useUpdateResturantOrder } from "@/api/MyResturantApi"
+import { useEffect, useState } from "react"
 
 type TOrderProp = {
     order: TOrderStatus
 }
 export default function OrderItemCard({ order }: TOrderProp) {
+    const [status, setStatus] = useState(order.status)
+
+    useEffect(() => {
+        setStatus(order.status)
+    }, [order.status])
+    
+    const { updateResturantOrderByOwner, isLoading } = useUpdateResturantOrder()
+    const handleStatusChange = async (changeStatus: OrderStatus) => {
+        setStatus(changeStatus)
+        await updateResturantOrderByOwner({ orderId: order._id as string, status: changeStatus })
+    }
     const getTime = () => {
         const orderDate = new Date(order.createdAt)
         const hours = orderDate.getHours()
@@ -38,12 +51,12 @@ export default function OrderItemCard({ order }: TOrderProp) {
                         <span> ${order.totalAmount}</span>
                     </div>
                 </CardTitle>
-            <Separator/>
+                <Separator />
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
-                    {order.cartItems.map((item)=>(
-                        <span>
+                    {order.cartItems.map((item) => (
+                        <span key={item.menuItemId}>
                             <Badge variant="outline" className="mr-2">{item.quantity}</Badge>
                             {item.name}
                         </span>
@@ -51,13 +64,13 @@ export default function OrderItemCard({ order }: TOrderProp) {
                 </div>
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="status">What is the status of this order?</Label>
-                    <Select>
+                    <Select value={status} disabled={isLoading} onValueChange={handleStatusChange}>
                         <SelectTrigger id="status">
-                            <SelectValue placeholder="Status"/>
+                            <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
-                            {ORDER_STATUS.map((status)=>(
-                                <SelectItem value={status.value}>
+                            {ORDER_STATUS.map((status) => (
+                                <SelectItem key={status.value} value={status.value}>
                                     {status.label}
                                 </SelectItem>
                             ))}
