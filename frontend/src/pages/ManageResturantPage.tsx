@@ -7,7 +7,7 @@ export default function ManageResturantPage() {
   const { creatResturant, isLoading: isCreateLoading } = useCreateResturant()
   const { resturant } = useGetResturant()
   const { updateResturant, isLoading: isUpdateLoading } = useUpdateResturant()
-  const { orderForResturantOwner, isLoading } = useGetresturantOrders()
+  const { orderForResturantOwner } = useGetresturantOrders()
   console.log(orderForResturantOwner);
 
   return (
@@ -19,7 +19,7 @@ export default function ManageResturantPage() {
       <TabsContent value="orders" className="space-y-5 bg-slate-50 p-10 rounded-lg">
         <h2 className="text-2xl font-bold">{orderForResturantOwner?.length || 0} active orders</h2>
         {orderForResturantOwner?.map((order) => (
-          <div>
+          <div key={order._id}>
             <OrderItemCard order={order} />
           </div>
         ))}
