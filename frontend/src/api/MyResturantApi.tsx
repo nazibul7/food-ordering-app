@@ -103,7 +103,7 @@ export const useUpdateResturant = () => {
 
 export const useGetresturantOrders = () => {
     const { getAccessTokenSilently } = useAuth0()
-    const resturantOrderResuest = async ():Promise<TOrderStatus[]> => {
+    const resturantOrderResuest = async (): Promise<TOrderStatus[]> => {
         try {
             const accessToken = await getAccessTokenSilently()
             const response = await fetch(`${API_BASE_URL}/api/resturant/order`, {
@@ -122,4 +122,41 @@ export const useGetresturantOrders = () => {
     }
     const { data: orderForResturantOwner, isLoading } = useQuery("resturantOrder", resturantOrderResuest)
     return { orderForResturantOwner, isLoading }
+}
+
+export type TUpdateOrderStatusRequest = {
+    orderId: string
+    status: string
+}
+
+export const useUpdateResturantOrder = () => {
+    const { getAccessTokenSilently } = useAuth0()
+    const updateResturantOrder = async (updateStatusOrder: TUpdateOrderStatusRequest) => {
+        try {
+            const accessToken = await getAccessTokenSilently()
+            const response = await fetch(`${API_BASE_URL}/api/resturant/order/${updateStatusOrder.orderId}/status`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updateStatusOrder)
+            })
+            if (!response.ok) {
+                throw new Error("Unable to update order status")
+            }
+            return response.json()
+        } catch (error) {
+            throw new Error("Something went wrong")
+        }
+    }
+    const { mutateAsync: updateResturantOrderByOwner, isLoading, reset, isError, isSuccess } = useMutation(updateResturantOrder)
+    if (isSuccess) {
+        toast.success("Order updated")
+    }
+    if (isError) {
+        toast.error("Unable to update order")
+        reset()
+    }
+    return { updateResturantOrderByOwner, isLoading }
 }
