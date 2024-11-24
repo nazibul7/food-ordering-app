@@ -125,7 +125,8 @@ export const ordersResturant = async (req: Request, res: Response) => {
 export const updateOrderStatus = async (req: Request, res: Response) => {
     try {
         const orderId = req.params.orderId
-        const status = req.body
+        const status = req.body.status
+        
         if (!orderId) {
             return res.status(404).json("Order id not found")
         }
