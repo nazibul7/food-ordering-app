@@ -8,7 +8,6 @@ export default function ManageResturantPage() {
   const { resturant } = useGetResturant()
   const { updateResturant, isLoading: isUpdateLoading } = useUpdateResturant()
   const { orderForResturantOwner } = useGetresturantOrders()
-  console.log(orderForResturantOwner);
 
   return (
     <Tabs defaultValue="orders">
