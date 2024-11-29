@@ -7,7 +7,7 @@
     "dev": "concurrently \"nodemon\" \"npm run stripe\"",
     "stripe":"stripe listen --forward-to localhost:3000/api/order/checkout/webhook",
     "build": "npm install && npx tsc",
-    "start": "node dist/index.js",
+    "start": "npx tsc && node dist/index.js",
     "postinstall": "mkdir -p public/temp"
   },
   "author": "Sk Nazibul Hossain",
