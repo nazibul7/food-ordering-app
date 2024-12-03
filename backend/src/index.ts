@@ -26,7 +26,7 @@ app.use('/api/order', orderRoute)
 
 app.use(globalErrorHandlerMiddleware)
 
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
+mongoose.connect(process.env.MONGODB_LOCAL_URL as string)
     .then(() => {
         app.listen(process.env.PORT || 3000, () => {
             console.log('Connected to MongoDB database');
