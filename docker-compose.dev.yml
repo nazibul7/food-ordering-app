@@ -10,6 +10,9 @@ services:
     env_file: ./backend/.env
     depends_on:
       - mongo
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
   frontend: 
     build:
       context: ./frontend
@@ -25,6 +28,8 @@ services:
     env_file: ./frontend/.env
     depends_on:
       - backend
+    volumes:
+      - ./frontend:/usr/src/app
   mongo:
     image: mongo
     ports:
