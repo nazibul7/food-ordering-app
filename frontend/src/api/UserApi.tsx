@@ -6,7 +6,13 @@ import { toast } from "sonner";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useGetUser = () => {
-    const { getAccessTokenSilently } = useAuth0()
+    const { getAccessTokenSilently ,isAuthenticated} = useAuth0()
+    if(!isAuthenticated){
+        return {
+            currentUser:null,
+            isLoading:false
+        }
+    }
     const getUserRequest = async (): Promise<User> => {
         const accessToken = await getAccessTokenSilently()
         const response = await fetch(`${API_BASE_URL}/api/v1/user`, {
