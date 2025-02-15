@@ -1,0 +1,40 @@
+version: "3.9"
+
+services: 
+  backend: 
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - 3000:3000
+    env_file: ./backend/.env
+    depends_on:
+      - mongo
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+  frontend: 
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.dev
+      args:
+       VITE_AUTH0_DOMAIN: ${VITE_AUTH0_DOMAIN}
+       VITE_AUTH0_CLIENT_ID: ${VITE_AUTH0_CLIENT_ID}
+       VITE_AUTH0_CALLBACK_URL: ${VITE_AUTH0_CALLBACK_URL}
+       VITE_AUTH0_AUDIENCE: ${VITE_AUTH0_AUDIENCE}
+       VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    ports:
+      - 5173:5173
+    env_file: ./frontend/.env
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/usr/src/app
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_vol:/data/db
+volumes:
+    mongodb_vol:

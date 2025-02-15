@@ -11,7 +11,14 @@ import { globalErrorHandlerMiddleware } from "./middleweres/globalErrorHandler"
 const app = express()
 
 // middlewares
-app.use(cors())
+
+app.use(cors({
+    origin:process.env.FRONTEND_URL,
+    methods: 'GET, POST, PUT, DELETE',
+    credentials: true
+}))
+
+
 app.use('/api/order/checkout/webhook', express.raw({ type: "application/json" }))
 app.use(express.json())
 app.get('/health', async (req: Request, res: Response) => {
@@ -26,7 +33,7 @@ app.use('/api/order', orderRoute)
 
 app.use(globalErrorHandlerMiddleware)
 
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
+mongoose.connect(process.env.MONGODB_LOCAL_URL as string)
     .then(() => {
         app.listen(process.env.PORT || 3000, () => {
             console.log('Connected to MongoDB database');

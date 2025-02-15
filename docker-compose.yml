@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    ports: 
+      - 3000:3000
+    env_file: ./backend/.env
+    depends_on: 
+      - mongo
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+         VITE_AUTH0_DOMAIN: ${VITE_AUTH0_DOMAIN}
+         VITE_AUTH0_CLIENT_ID: ${VITE_AUTH0_CLIENT_ID}
+         VITE_AUTH0_CALLBACK_URL: ${VITE_AUTH0_CALLBACK_URL}
+         VITE_AUTH0_AUDIENCE: ${VITE_AUTH0_AUDIENCE}
+         VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    ports:
+      - 5173:80
+    env_file: ./frontend/.env
+    depends_on:
+      - backend
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+volumes:
+     mongodb_data:
