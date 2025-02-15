@@ -20,7 +20,14 @@ type TCheckoutSessionRequest = {
     resturantId: string
 }
 export const useCreateCheckoutSession = () => {
-    const { getAccessTokenSilently } = useAuth0()
+    const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+    if (!isAuthenticated) {
+        return {
+            createCheckoutSession: async () => { },
+            isLoading: false
+        };
+    }
+
     const createCheckoutSessionRequest = async (checkoutSessionRequest: TCheckoutSessionRequest) => {
         try {
             const accessToken = await getAccessTokenSilently()
@@ -32,6 +39,7 @@ export const useCreateCheckoutSession = () => {
                 },
                 body: JSON.stringify(checkoutSessionRequest)
             })
+            console.log("Checkout API Response");
             if (!response.ok) {
                 throw new Error("Unable to create checkout session")
             }
@@ -54,7 +62,7 @@ export const useCreateCheckoutSession = () => {
 
 export const useGetOrders = () => {
     const { getAccessTokenSilently } = useAuth0()
-    const getOrderRequest = async ():Promise<TOrderStatus[]> => {
+    const getOrderRequest = async (): Promise<TOrderStatus[]> => {
         try {
             const accessToken = await getAccessTokenSilently()
             const response = await fetch(`${API_BASE_URL}/api/order`, {
@@ -67,11 +75,11 @@ export const useGetOrders = () => {
                 throw new Error("Unable to get orders status")
             }
             return response.json()
-        } catch (error ) {
+        } catch (error) {
             console.log(error);
-           return []
+            return []
         }
     }
-    const { data: orders, isLoading } = useQuery("fetchOrders", getOrderRequest,{refetchInterval:5000})
-    return {orders,isLoading}
+    const { data: orders, isLoading } = useQuery("fetchOrders", getOrderRequest, { refetchInterval: 5000 })
+    return { orders, isLoading }
 }
