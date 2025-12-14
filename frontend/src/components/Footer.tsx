@@ -1,4 +1,3 @@
-
 const Footer = () => {
   return (
     <div className="container mx-auto flex flex-col md:flex-row items-center bg-orange-500 text-white py-7 justify-between">
@@ -8,7 +7,7 @@ const Footer = () => {
         <span className="tracking-tight">Terms of Service</span>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

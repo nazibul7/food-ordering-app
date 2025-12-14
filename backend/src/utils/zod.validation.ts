@@ -1,36 +1,43 @@
-import z from "zod"
+import z from "zod";
 
 export const ValidatUserRequest = z.object({
-    name: z.string().trim().min(1, "Name is needed"),
-    addressLine1: z.string().trim().min(1, "Address is needed"),
-    city: z.string().trim().min(1, "City is needed"),
-    country: z.string().trim().min(1, "City is needed")
-})
+  name: z.string().trim().min(1, "Name is needed"),
+  addressLine1: z.string().trim().min(1, "Address is needed"),
+  city: z.string().trim().min(1, "City is needed"),
+  country: z.string().trim().min(1, "City is needed"),
+});
 
-export type ValidatUserRequestType = z.infer<typeof ValidatUserRequest>
+export type ValidatUserRequestType = z.infer<typeof ValidatUserRequest>;
 
 export const resturantSchema = z.object({
-    resturantName: z.string(),
-    city: z.string(),
-    country: z.string(),
-    deliveryPrice: z.number().positive(),
-    estimatedDeliveryTime: z.number().positive(),
-    cusines: z.array(z.string()),
-    menuItems: z.array(z.object({
-        name: z.string(),
-        price: z.number().positive()
-    })),
-    lastUpdated: z.string()
-})
+  resturantName: z.string(),
+  city: z.string(),
+  country: z.string(),
+  deliveryPrice: z.number().positive(),
+  estimatedDeliveryTime: z.number().positive(),
+  cusines: z.array(z.string()),
+  menuItems: z.array(
+    z.object({
+      name: z.string(),
+      price: z.number().positive(),
+    })
+  ),
+  lastUpdated: z.string(),
+});
 
-export type resturantSchemaType = z.infer<typeof resturantSchema>
+export type resturantSchemaType = z.infer<typeof resturantSchema>;
 
-export const UpdatResturantSchema = resturantSchema.partial().refine((data) => {
-    const hasAtLeastOneField = Object.values(data).some((value) => value != undefined && value != null)
-    return hasAtLeastOneField
-}, {
+export const UpdatResturantSchema = resturantSchema.partial().refine(
+  (data) => {
+    const hasAtLeastOneField = Object.values(data).some(
+      (value) => value != undefined && value != null
+    );
+    return hasAtLeastOneField;
+  },
+  {
     message: "At least one field must be provided to update the restaurant.",
-    path: []
-})
+    path: [],
+  }
+);
 
-export type UpdatResturantType=z.infer<typeof UpdatResturantSchema>
+export type UpdatResturantType = z.infer<typeof UpdatResturantSchema>;
