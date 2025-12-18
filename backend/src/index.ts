@@ -8,7 +8,6 @@ import resturantRoutes from "./routes/resturant.route";
 import orderRoute from "./routes/order.route";
 import { globalErrorHandlerMiddleware } from "./middleweres/globalErrorHandler";
 
-
 const app = express();
 
 // middlewares
