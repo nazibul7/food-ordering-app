@@ -15,45 +15,47 @@ jobs:
         timeout-minutes: 10
 
         steps:
-          - name: Checkout repository
-            uses: actions/checkout@v4
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-          - name: Setup Node.js
-            uses: actions/setup-node@v4
-            with:
-              node-version: 20
-              cache: npm
-        
-          # ---------- FRONTEND ---------- #
-          - name: Intall Frontend Dependencies
-            working-directory: frontend
-            run: npm install
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "npm"
 
-          - name: Lint Frontend
-            working-directory: frontend
-            run: npm lint
+            # ---------- FRONTEND ---------- #
+            - name: Install Frontend Dependencies
+              working-directory: frontend
+              run: npm ci
 
-          - name: Prettier Check Frontend
-            working-directory: frontend
-            run: npm check
-            
-          - name: Build frontend
-            working-directory: frontend
-            run: npm run build
+            - name: Lint Frontend
+              working-directory: frontend
+              run: npm run lint
 
-        # ---------- BACKEND ---------- #
-          - name: Install backend dependencies
-            working-directory: backend
-            run: npm install
+            - name: Prettier Check Frontend
+              working-directory: frontend
+              run: npm run check
 
-          - name: Lint backend
-            working-directory: backend
-            run: npm run lint
+            - name: Build frontend
+              if: github.event_name == 'push'
+              working-directory: frontend
+              run: npm run build
 
-          - name: Prettier check backend
-            working-directory: backend
-            run: npm run check
+            # ---------- BACKEND ---------- #
+            - name: Install backend dependencies
+              working-directory: backend
+              run: npm ci
 
-          - name: Build backend
-            working-directory: backend
-            run: npm run build
+            - name: Lint backend
+              working-directory: backend
+              run: npm run lint
+
+            - name: Prettier check backend
+              working-directory: backend
+              run: npm run check
+
+            - name: Build backend
+              if: github.event_name == 'push'
+              working-directory: backend
+              run: npm run build
