@@ -1,0 +1,59 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    ci:
+        name: Lint, Check & Build
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+
+          - name: Setup Node.js
+            uses: actions/setup-node@v4
+            with:
+              node-version: 20
+              cache: npm
+        
+          # ---------- FRONTEND ---------- #
+          - name: Intall Frontend Dependencies
+            working-directory: frontend
+            run: npm install
+
+          - name: Lint Frontend
+            working-directory: frontend
+            run: npm lint
+
+          - name: Prettier Check Frontend
+            working-directory: frontend
+            run: npm check
+            
+          - name: Build frontend
+            working-directory: frontend
+            run: npm run build
+
+        # ---------- BACKEND ---------- #
+          - name: Install backend dependencies
+            working-directory: backend
+            run: npm install
+
+          - name: Lint backend
+            working-directory: backend
+            run: npm run lint
+
+          - name: Prettier check backend
+            working-directory: backend
+            run: npm run check
+
+          - name: Build backend
+            working-directory: backend
+            run: npm run build
