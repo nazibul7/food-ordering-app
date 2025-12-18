@@ -3,7 +3,7 @@ import UserProfileForm from "@/forms/user-profile-form/UserProfileForm";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const UserProfilePage = () => {
-  const { isAuthenticated } = useAuth0()
+  const { isAuthenticated } = useAuth0();
   const { updateUser, isLoading: isUpdateLoading } = useUpdateUser();
   const { currentUser, isLoading: isGetLoading } = useGetUser();
 
