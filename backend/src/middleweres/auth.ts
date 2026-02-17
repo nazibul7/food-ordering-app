@@ -35,9 +35,9 @@ export const jwtParse = async (
     }
 
     // Check if it's a M2M token (client credentials)
-    if (auth0Id.endsWith('@clients')) {
+    if (auth0Id.endsWith("@clients")) {
       const testUser = await User.findOne({
-        email: "baseline.user@test.io"
+        email: "baseline.user@test.io",
       });
 
       if (!testUser) {
@@ -46,12 +46,12 @@ export const jwtParse = async (
       req.auth0Id = testUser.auth0Id;
       req.userId = testUser._id.toString();
       // console.log(testUser);
-      
+
       return next();
     }
 
     // Regular user token flow
-    const user = await User.findOne({ auth0Id })
+    const user = await User.findOne({ auth0Id });
     if (!user) {
       return res.status(401).json("Incorrect token");
     }
