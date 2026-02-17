@@ -57,7 +57,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       await newOrder.save();
       return res.json({
         url: `${FRONTEND_URL}/order-status?success=true`,
-        orderId: newOrder._id
+        orderId: newOrder._id,
       });
     }
 
