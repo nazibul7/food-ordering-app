@@ -7,6 +7,8 @@ import myresturantRoutes from "./routes/myresturant.route";
 import resturantRoutes from "./routes/resturant.route";
 import orderRoute from "./routes/order.route";
 import { globalErrorHandlerMiddleware } from "./middleweres/globalErrorHandler";
+import { metricsMiddleware } from "./middleweres/metrics";
+import metricsRoutes from "./routes/metrics.route"
 
 const app = express();
 
@@ -25,6 +27,10 @@ app.use(
   express.raw({ type: "application/json" })
 );
 app.use(express.json());
+
+app.use(metricsMiddleware)
+app.get("/metrics", metricsRoutes)
+
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({
     status: "Health OK!",
