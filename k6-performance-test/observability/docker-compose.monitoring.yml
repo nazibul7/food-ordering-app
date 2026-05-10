@@ -1,0 +1,38 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+
+  mongo-exporter:
+    image: percona/mongodb_exporter:0.40
+    ports:
+      - "9216:9216"
+    command:
+      - "--mongodb.uri=mongodb://mongo:27017"
+      - "--collect-all"
+    depends_on:
+      - mongo
+
+  node-exporter:
+     image: prom/node-exporter:latest
+     ports:
+      - "9100:9100"
+     volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+     command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
