@@ -35,7 +35,7 @@ export const metricsMiddleware = (
         }
 
         const duration = Date.now() - start;
-        let labels = {
+        const labels = {
             method: req.method,
             route: req.route?.path || req.path,
             status_code: String(res.statusCode)
