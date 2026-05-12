@@ -34,14 +34,13 @@ export const metricsMiddleware = (
     }
 
     const duration = Date.now() - start;
-    const labels = {
-      method: req.method,
-      route: req.route?.path || req.path,
-      status_code: String(res.statusCode),
-    };
+    const route = req.route?.path || req.path;
+    const statusCode = String(res.statusCode);
 
-    httpRequestsTotal.labels(labels).inc();
-    httpRequestDurationMicroseconds.labels().observe(duration);
+    httpRequestsTotal.labels(req.method, route, statusCode).inc();
+    httpRequestDurationMicroseconds
+      .labels(req.method, route, statusCode)
+      .observe(duration);
   });
 
   next();
