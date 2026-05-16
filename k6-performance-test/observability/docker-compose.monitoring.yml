@@ -4,12 +4,26 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      # The command we are running uses -f k6-performance-test/observability/docker-compose.monitoring.yml.
+      # Inside that monitoring.yml file, the path to prometheus.yml must be relative to where you are running the command (~/food-ordering-app), not relative to the .yml file itself.
+      - ./k6-performance-test/observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      # CRITICAL FOR K6 PERFORMANCE TESTING! Prometheus is a live database that scrapes
+      # metrics every few seconds. If you omit this line, all historical graphs, performance
+      # spikes, and load-test metrics will be permanently erased the moment you type
+      # 'docker compose down'. This volume maps the database directory to a safe, persistent
+      # pocket on your hard drive so your performance testing history survives container resets.
+      - prometheus_data:/prometheus
 
   grafana:
     image: grafana/grafana:latest
     ports:
       - "3001:3000"
+    volumes:
+      - ./k6-performance-test/observability/grafana/provisioning:/etc/grafana/provisioning
+
+      # Grafana saves all your UI-created dashboards, users, and settings inside /var/lib/grafana/grafana.db.
+      # This volume mirrors that database to your hard drive so your dashboard layouts survive container deletion.
+      - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
 
@@ -24,15 +38,19 @@ services:
       - mongo
 
   node-exporter:
-     image: prom/node-exporter:latest
-     ports:
+    image: prom/node-exporter:latest
+    ports:
       - "9100:9100"
-     volumes:
+    volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-     command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+
+volumes:
+  prometheus_data:
+  grafana_data:
