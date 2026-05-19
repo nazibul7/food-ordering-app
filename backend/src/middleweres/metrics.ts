@@ -28,11 +28,11 @@ export const metricsMiddleware = (
 ) => {
   const start = Date.now();
 
-  res.on("finish", () => {
-    if (req.path === "/metrics") {
-      return next();
-    }
+  if (req.path === "/metrics") {
+    return next();
+  }
 
+  res.on("finish", () => {
     const duration = Date.now() - start;
     const route = req.route?.path || req.path;
     const statusCode = String(res.statusCode);

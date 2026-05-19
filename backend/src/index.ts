@@ -29,7 +29,7 @@ app.use(
 app.use(express.json());
 
 app.use(metricsMiddleware);
-app.get("/metrics", metricsRoutes);
+app.use("/metrics", metricsRoutes);
 
 app.get("/health", async (req: Request, res: Response) => {
   res.status(200).json({
